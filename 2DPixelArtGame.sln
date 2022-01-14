@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2DPixelArtEngine", "2DPixelArtEngine\2DPixelArtEngine.csproj", "{34E17171-8FFD-4E9F-82ED-5ED83CD79736}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2DPixelArtGame", "2DPixelArtGame\2DPixelArtGame.csproj", "{5152A5C4-97F9-4545-8E94-48905F24CB75}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34E17171-8FFD-4E9F-82ED-5ED83CD79736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34E17171-8FFD-4E9F-82ED-5ED83CD79736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34E17171-8FFD-4E9F-82ED-5ED83CD79736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34E17171-8FFD-4E9F-82ED-5ED83CD79736}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5152A5C4-97F9-4545-8E94-48905F24CB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5152A5C4-97F9-4545-8E94-48905F24CB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5152A5C4-97F9-4545-8E94-48905F24CB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5152A5C4-97F9-4545-8E94-48905F24CB75}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {111C02BE-4BE9-465B-AFDF-B500947B07C8}
+	EndGlobalSection
+EndGlobal

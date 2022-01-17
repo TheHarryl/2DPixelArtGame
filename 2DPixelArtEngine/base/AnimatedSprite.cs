@@ -8,23 +8,62 @@ namespace _2DPixelArtEngine
 {
     public class AnimatedSprite : Sprite
     {
-        public List<Sprite> SpriteSheet;
-        public int Columns;
-        public int Frames;
+        Rectangle _startingRectangle;
+
+        public int FramesPerRow;
+        public int TotalFrames;
         public float FramesPerSecond;
 
         private TimeSpan _timeStarted;
+        private TimeSpan _timePaused;
+        public bool Paused;
 
-        public AnimatedSprite(Texture2D texture, Rectangle? startingCropping, int columns, int frames, float framesPerSecond) : base(texture, startingCropping)
+        public int SpacingX;
+        public int SpacingY;
+
+        public bool Looped;
+
+        public AnimatedSprite(Texture2D texture, Rectangle? startingCropping, int framesPerRow, int totalFrames, float framesPerSecond, bool looped = true, int spacingX = 0, int spacingY = 0) : base(texture, startingCropping)
         {
-            Columns = columns;
-            Frames = frames;
+            _startingRectangle = Cropping;
+
+            FramesPerRow = framesPerRow;
+            TotalFrames = totalFrames;
             FramesPerSecond = framesPerSecond;
+            Paused = false;
+            _timeStarted = new TimeSpan(0);
+            _timePaused = new TimeSpan(0);
+
+            Looped = looped;
+
+            SpacingX = spacingX;
+            SpacingY = spacingY;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            if (_timeStarted == new TimeSpan(0))
+                _timeStarted = gameTime.TotalGameTime;
+            if (Paused && _timePaused == new TimeSpan(0))
+                _timePaused = gameTime.TotalGameTime;
+            else if (!Paused && _timePaused != new TimeSpan(0))
+            {
+                _timeStarted = gameTime.TotalGameTime - (_timePaused - _timeStarted);
+                _timePaused = new TimeSpan(0);
+            }
+            if (Paused) return;
 
+            int currentFrame = (int)((gameTime.TotalGameTime - _timeStarted).TotalSeconds / FramesPerSecond);
+            if (currentFrame >= TotalFrames)
+            {
+                if (Looped)
+                    currentFrame %= TotalFrames;
+                else
+                    currentFrame = TotalFrames - 1;
+            }
+            int column = currentFrame % FramesPerRow;
+            int row = currentFrame / FramesPerRow;
+            Cropping = new Rectangle(_startingRectangle.X + column * (_startingRectangle.Width + SpacingX), _startingRectangle.Y + row * (_startingRectangle.Height + SpacingY), _startingRectangle.Width, _startingRectangle.Height);
         }
     }
 }

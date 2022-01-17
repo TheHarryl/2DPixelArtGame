@@ -2,13 +2,26 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace _2DPixelArtEngine
 {
     public class Object
     {
         public Sprite Sprite;
+        private Controller _controller;
+        public Controller Controller
+        {
+            get => _controller;
+            set
+            {
+                value.Parent = this;
+                _controller = value;
+            }
+        }
 
         public Vector2 Position;
         public Color Color = Color.White;
@@ -25,23 +38,38 @@ namespace _2DPixelArtEngine
             }
         }
 
+        public RectangleF Hitbox;
+        public Vector2 Direction;
+        public float Speed;
         public bool Collideable;
 
-        Object(Sprite sprite, Vector2 position = new Vector2())
+        public Object(RectangleF hitbox, Sprite sprite, Vector2 position = new Vector2(), Controller? controller = null, float speed = 0f, bool collideable = true)
         {
             Sprite = sprite;
+            if (controller == null)
+                Controller = new Controller();
             Scale = Vector2.One;
             Position = position;
+            Hitbox = hitbox;
+            Direction = Vector2.Zero;
+            Speed = speed;
+            Collideable = collideable;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-
+            Sprite.Update(gameTime);
+            Controller.Update(gameTime);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
-            spriteBatch.Draw(Sprite.Texture, new Rectangle((int)Position.X, (int)Position.Y, (int)_targetSize.X, (int)_targetSize.Y), Sprite.Cropping, Color);
+            spriteBatch.Draw(Sprite.Texture, new Rectangle((int)(Position + Sprite.Offset + offset).X, (int)(Position + Sprite.Offset + offset).Y, (int)_targetSize.X, (int)_targetSize.Y), Sprite.Cropping, Color);
+        }
+
+        public RectangleF GetBounds(Vector2 offset = new Vector2())
+        {
+            return new RectangleF((Position + offset).X, (Position + offset).Y, (float)Math.Ceiling(_targetSize.X), (float)Math.Ceiling(_targetSize.Y));
         }
     }
 }

@@ -54,6 +54,19 @@
             "rid": "win-x86"
           }
         }
+      },
+      "2DPixelArtEngine/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "dependencies": {
+          "MonoGame.Framework.DesktopGL": "3.8.0.1641"
+        },
+        "compile": {
+          "bin/placeholder/2DPixelArtEngine.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/2DPixelArtEngine.dll": {}
+        }
       }
     }
   },
@@ -165,10 +178,16 @@
         "runtimes/win-x86/native/SDL2.dll",
         "runtimes/win-x86/native/soft_oal.dll"
       ]
+    },
+    "2DPixelArtEngine/1.0.0": {
+      "type": "project",
+      "path": "../2DPixelArtEngine/2DPixelArtEngine.csproj",
+      "msbuildProject": "../2DPixelArtEngine/2DPixelArtEngine.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "2DPixelArtEngine >= 1.0.0",
       "MonoGame.Content.Builder.Task >= 3.8.0.1641",
       "MonoGame.Framework.DesktopGL >= 3.8.0.1641"
     ]
@@ -181,11 +200,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\harry\\Desktop\\2DPixelArtGame\\2DPixelArtGame\\2DPixelArtGame.csproj",
+      "projectUniqueName": "C:\\Users\\harry\\Desktop\\desktop\\AI\\2DPixelArtGame\\2DPixelArtGame\\2DPixelArtGame.csproj",
       "projectName": "2DPixelArtGame",
-      "projectPath": "C:\\Users\\harry\\Desktop\\2DPixelArtGame\\2DPixelArtGame\\2DPixelArtGame.csproj",
+      "projectPath": "C:\\Users\\harry\\Desktop\\desktop\\AI\\2DPixelArtGame\\2DPixelArtGame\\2DPixelArtGame.csproj",
       "packagesPath": "C:\\Users\\harry\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\harry\\Desktop\\2DPixelArtGame\\2DPixelArtGame\\obj\\",
+      "outputPath": "C:\\Users\\harry\\Desktop\\desktop\\AI\\2DPixelArtGame\\2DPixelArtGame\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -207,7 +226,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\harry\\Desktop\\desktop\\AI\\2DPixelArtGame\\2DPixelArtEngine\\2DPixelArtEngine.csproj": {
+              "projectPath": "C:\\Users\\harry\\Desktop\\desktop\\AI\\2DPixelArtGame\\2DPixelArtEngine\\2DPixelArtEngine.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -244,7 +267,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -6,20 +6,17 @@ using System.Text;
 
 namespace _2DPixelArtEngine
 {
-    public class Entity : Object
+    public class Controller
     {
+        public Object Parent;
+        public int TeamID;
 
-        Entity()
+        public Controller(int teamID = 0)
         {
-
+            TeamID = teamID;
         }
 
-        public override void Update(GameTime gameTime)
-        {
-
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
+        public virtual void Update(GameTime gameTime)
         {
 
         }

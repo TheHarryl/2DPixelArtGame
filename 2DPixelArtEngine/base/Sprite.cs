@@ -10,14 +10,22 @@ namespace _2DPixelArtEngine
     {
         public Texture2D Texture;
         public Rectangle Cropping;
+        public Vector2 Offset;
 
-        public Sprite(Texture2D texture, Rectangle? cropping)
+        public Sprite(Texture2D texture, Rectangle? cropping, Vector2 offset = new Vector2())
         {
             Texture = texture;
             if (cropping != null)
                 Cropping = (Rectangle)cropping;
             else
                 Cropping = Texture.Bounds;
+
+            Offset = offset;
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+
         }
     }
 }

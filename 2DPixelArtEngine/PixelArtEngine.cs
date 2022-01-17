@@ -2,7 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace _2DPixelArtEngine
 {
@@ -12,8 +15,8 @@ namespace _2DPixelArtEngine
 
         private int _width;
         private int _height;
-        private int _pixelWidth;
-        private int _pixelHeight;
+        //private int _pixelWidth;
+        //private int _pixelHeight;
 
         public int Width
         {
@@ -21,7 +24,7 @@ namespace _2DPixelArtEngine
             set
             {
                 _width = value;
-                _pixelWidth = (int)Math.Ceiling((float)_width / PixelRatio);
+                //_pixelWidth = (int)Math.Ceiling((float)_width / PixelRatio);
             }
         }
         public int Height
@@ -30,35 +33,74 @@ namespace _2DPixelArtEngine
             set
             {
                 _height = value;
-                _pixelHeight = (int)Math.Ceiling((float)_height / PixelRatio);
+                //_pixelHeight = (int)Math.Ceiling((float)_height / PixelRatio);
             }
         }
 
-        public int PixelRatio;
+        //public int PixelRatio;
 
-        public List<Object> Scene;
+        public Camera Camera;
+        public ChunkManager Scene;
+        public ChunkManager Background;
 
-        private Texture2D _rectangle;
+        //public Color[] Screen;
+        //private Texture2D _screen;
 
-        public Color[] Screen;
+        public int UpdateRadiusInChunks;
 
-        public PixelEngine(GraphicsDevice graphicsDevice, int width, int height, int pixelRatio = 3)
+        public PixelEngine(GraphicsDevice graphicsDevice, int width, int height, int updateRadiusInChunks = 5, int chunkSize = 320)//, int pixelRatio = 3)
         {
             _graphicsDevice = graphicsDevice;
 
-            _rectangle = new Texture2D(_graphicsDevice, 1, 1);
-            Color[] data = new Color[1];
-            data[0] = Color.White;
-            _rectangle.SetData(data);
-
-            PixelRatio = pixelRatio;
+            //PixelRatio = pixelRatio;
             Width = width;
             Height = height;
+            UpdateRadiusInChunks = updateRadiusInChunks;
 
-            Screen = new Color[_pixelWidth * _pixelHeight];
-            _screen = new Texture2D(_graphicsDevice, _pixelWidth, _pixelHeight);
+            //Screen = new Color[_pixelWidth * _pixelHeight];
+            //_screen = new Texture2D(_graphicsDevice, _pixelWidth, _pixelHeight);
 
-            Scene = new List<Object>() { };
+            Scene = new ChunkManager(chunkSize);
+            Background = new ChunkManager(chunkSize);
+        }
+
+        public void Update(GameTime gameTime, Vector2 offset = new Vector2())
+        {
+            GlobalTime.Update(gameTime);
+            ChunkPosition originChunk = Scene.GetChunk(offset - Camera.Position);
+            for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
+            {
+                for (int x = originChunk.X - UpdateRadiusInChunks; x <= originChunk.X + UpdateRadiusInChunks; x++)
+                {
+                    Scene.UpdateChunk(gameTime, new ChunkPosition(x, y));
+                    Background.UpdateChunk(gameTime, new ChunkPosition(x, y));
+                }
+            }
+            Scene.ReindexChunks();
+            Background.ReindexChunks();
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
+        {
+            if (Camera == null)
+                Camera = new Camera();
+            Vector2 origin = offset - Camera.Position;
+            ChunkPosition originChunk = Scene.GetChunk(origin);
+            RectangleF screenBounds = new RectangleF(origin.X - Width / 2f, origin.Y - Height / 2f, Width, Height);
+            for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
+            {
+                for (int x = originChunk.X - UpdateRadiusInChunks; x <= originChunk.X + UpdateRadiusInChunks; x++)
+                {
+                    Background.DrawChunk(spriteBatch, screenBounds, new ChunkPosition(x, y), offset, true);
+                }
+            }
+            for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
+            {
+                for (int x = originChunk.X - UpdateRadiusInChunks; x <= originChunk.X + UpdateRadiusInChunks; x++)
+                {
+                    Scene.DrawChunk(spriteBatch, screenBounds, new ChunkPosition(x, y), offset, true);
+                }
+            }
         }
 
         public Texture2D ImportTexture(string fileLocation)

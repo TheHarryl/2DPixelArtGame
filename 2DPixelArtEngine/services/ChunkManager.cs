@@ -37,11 +37,12 @@ namespace _2DPixelArtEngine
                 {
                     Object obj = chunk.Value[i];
                     if (obj.Direction == Vector2.Zero || obj.Speed == 0f) continue;
-                    ChunkPosition objChunk = GetChunk(obj.Position);
+                    ChunkPosition objChunk = GetChunkPosition(obj.Position);
                     if (chunk.Key.X != objChunk.X || chunk.Key.Y != objChunk.Y)
                     {
                         chunk.Value.Remove(obj);
                         _chunks[objChunk].Add(obj);
+                        obj.Chunk = objChunk;
                     }
                 }
             }
@@ -63,7 +64,7 @@ namespace _2DPixelArtEngine
                 _chunks[chunk].OrderByDescending(o => o.Position.Y).ToList();
             for (int i = 0; i < _chunks[chunk].Count; i++)
             {
-                if (screenBounds.Contains(_chunks[chunk][i].GetBounds()))
+                if (screenBounds.IntersectsWith(_chunks[chunk][i].GetBounds()))
                     _chunks[chunk][i].Draw(spriteBatch, offset);
             }
         }
@@ -84,7 +85,9 @@ namespace _2DPixelArtEngine
 
         public void Add(Object obj)
         {
-            ChunkPosition chunk = GetChunk(obj.Position);
+            ChunkPosition chunk = GetChunkPosition(obj.Position);
+            obj.Parent = this;
+            obj.Chunk = chunk;
             if (!_chunks.ContainsKey(chunk))
             {
                 _chunks.Add(chunk, new List<Object>());
@@ -92,9 +95,34 @@ namespace _2DPixelArtEngine
             _chunks[chunk].Add(obj);
         }
 
-        public ChunkPosition GetChunk(Vector2 position)
+        public ChunkPosition GetChunkPosition(Vector2 position)
         {
             return new ChunkPosition((int)Math.Ceiling(position.X / _chunkSize), (int)Math.Ceiling(position.Y / _chunkSize));
+        }
+
+        public List<Object> GetChunk(ChunkPosition chunk)
+        {
+            if (!_chunks.ContainsKey(chunk)) return new List<Object>();
+            return _chunks[chunk];
+        }
+
+        public List<Object> GetChunk(int chunkX, int chunkY)
+        {
+            ChunkPosition chunk = new ChunkPosition(chunkX, chunkY);
+            return GetChunk(chunk);
+        }
+
+        public List<Object> GetNearbyChunks(ChunkPosition chunk, int chunkRadius = 1)
+        {
+            List<Object> objects = new List<Object>();
+            for (int y = chunk.Y - 1; y <= chunk.Y + 1; y++)
+            {
+                for (int x = chunk.X - 1; x <= chunk.X + 1; x++)
+                {
+                    objects = objects.Concat(GetChunk(x, y)).ToList();
+                }
+            }
+            return objects;
         }
     }
 }

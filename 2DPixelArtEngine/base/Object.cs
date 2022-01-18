@@ -11,6 +11,9 @@ namespace _2DPixelArtEngine
 {
     public class Object
     {
+        public ChunkManager Parent;
+        public ChunkPosition Chunk;
+
         public Sprite Sprite;
         private Controller _controller;
         public Controller Controller
@@ -70,6 +73,11 @@ namespace _2DPixelArtEngine
         public RectangleF GetBounds(Vector2 offset = new Vector2())
         {
             return new RectangleF((Position + offset).X, (Position + offset).Y, (float)Math.Ceiling(_targetSize.X), (float)Math.Ceiling(_targetSize.Y));
+        }
+
+        public RectangleF GetHitboxBounds(Vector2 offset = new Vector2())
+        {
+            return new RectangleF((Position + offset).X + Hitbox.X, (Position + offset).Y + Hitbox.Y, Hitbox.Width, Hitbox.Height);
         }
     }
 }

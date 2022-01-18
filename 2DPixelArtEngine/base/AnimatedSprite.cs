@@ -22,6 +22,7 @@ namespace _2DPixelArtEngine
         public int SpacingY;
 
         public bool Looped;
+        public bool Done;
 
         public AnimatedSprite(Texture2D texture, Rectangle? startingCropping, int framesPerRow, int totalFrames, float framesPerSecond, bool looped = true, int spacingX = 0, int spacingY = 0) : base(texture, startingCropping)
         {
@@ -35,9 +36,28 @@ namespace _2DPixelArtEngine
             _timePaused = new TimeSpan(0);
 
             Looped = looped;
+            Done = false;
 
             SpacingX = spacingX;
             SpacingY = spacingY;
+        }
+
+        public AnimatedSprite(Texture2D texture, Rectangle? cropping) : base(texture, cropping)
+        {
+            _startingRectangle = Cropping;
+
+            FramesPerRow = 1;
+            TotalFrames = 1;
+            FramesPerSecond = 1;
+            Paused = false;
+            _timeStarted = new TimeSpan(0);
+            _timePaused = new TimeSpan(0);
+
+            Looped = true;
+            Done = false;
+
+            SpacingX = 0;
+            SpacingY = 0;
         }
 
         public override void Update(GameTime gameTime)
@@ -56,6 +76,7 @@ namespace _2DPixelArtEngine
             int currentFrame = (int)((gameTime.TotalGameTime - _timeStarted).TotalSeconds / FramesPerSecond);
             if (currentFrame >= TotalFrames)
             {
+                Done = true;
                 if (Looped)
                     currentFrame %= TotalFrames;
                 else
@@ -64,6 +85,13 @@ namespace _2DPixelArtEngine
             int column = currentFrame % FramesPerRow;
             int row = currentFrame / FramesPerRow;
             Cropping = new Rectangle(_startingRectangle.X + column * (_startingRectangle.Width + SpacingX), _startingRectangle.Y + row * (_startingRectangle.Height + SpacingY), _startingRectangle.Width, _startingRectangle.Height);
+        }
+
+        public void Restart()
+        {
+            _timeStarted = GlobalTime.Timestamp;
+            _timePaused = new TimeSpan(0);
+            Paused = false;
         }
     }
 }

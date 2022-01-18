@@ -67,7 +67,7 @@ namespace _2DPixelArtEngine
         public void Update(GameTime gameTime, Vector2 offset = new Vector2())
         {
             GlobalTime.Update(gameTime);
-            ChunkPosition originChunk = Scene.GetChunk(offset - Camera.Position);
+            ChunkPosition originChunk = Scene.GetChunkPosition(offset - Camera.Position);
             for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
             {
                 for (int x = originChunk.X - UpdateRadiusInChunks; x <= originChunk.X + UpdateRadiusInChunks; x++)
@@ -85,7 +85,7 @@ namespace _2DPixelArtEngine
             if (Camera == null)
                 Camera = new Camera();
             Vector2 origin = offset - Camera.Position;
-            ChunkPosition originChunk = Scene.GetChunk(origin);
+            ChunkPosition originChunk = Scene.GetChunkPosition(origin);
             RectangleF screenBounds = new RectangleF(origin.X - Width / 2f, origin.Y - Height / 2f, Width, Height);
             for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
             {

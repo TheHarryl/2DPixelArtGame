@@ -81,7 +81,7 @@ namespace _2DPixelArtGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(32, 85, 58));
+            GraphicsDevice.Clear(new Color(37, 146, 79));
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);

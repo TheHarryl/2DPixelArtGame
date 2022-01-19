@@ -62,7 +62,7 @@ namespace _2DPixelArtEngine
             Speed = speed;
             Collideable = collideable;
             Scale = Vector2.One;
-            Color = Color.White
+            Color = Color.White;
         }
 
         public virtual void Update(GameTime gameTime)

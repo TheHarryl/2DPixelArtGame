@@ -61,6 +61,8 @@ namespace _2DPixelArtEngine
             }
         }
 
+        public bool DisplayHitboxes;
+
         //public Color[] Screen;
         //private Texture2D _screen;
 
@@ -81,7 +83,8 @@ namespace _2DPixelArtEngine
             Camera = new Camera();
             Scene = new ChunkManager(chunkSize);
             Background = new ChunkManager(chunkSize);
-            
+
+            DisplayHitboxes = false;
         }
 
         public void Update(GameTime gameTime, Vector2 offset = new Vector2())

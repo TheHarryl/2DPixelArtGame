@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace _2DPixelArtEngine
 {
@@ -12,11 +13,17 @@ namespace _2DPixelArtEngine
     {
         private static GraphicsDevice _graphicsDevice;
         private static Dictionary<string, Texture2D> _loadedAssets;
+        public static Texture2D Pixel;
 
         public static void Initialize(GraphicsDevice graphicsDevice)
         {
             _graphicsDevice = graphicsDevice;
             _loadedAssets = new Dictionary<string, Texture2D>();
+
+            Pixel = new Texture2D(_graphicsDevice, 1, 1);
+            Color[] data = new Color[1];
+            data[0] = Color.White;
+            Pixel.SetData(data);
         }
 
         public static Texture2D Load(string fileLocation)

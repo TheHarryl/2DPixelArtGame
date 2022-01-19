@@ -27,11 +27,11 @@ namespace _2DPixelArtGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            ContentManager.Initialize(GraphicsDevice);
             string directory = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "\\sprites\\";
-
-            _pixelEngine = new PixelEngine(800, 480);
+            ContentManager.Initialize(GraphicsDevice);
+            Texture2D playerTexture = ContentManager.Load(directory + "dude.png");
             Texture2D grassTexture = ContentManager.Load(directory + "grass.png");
+            _pixelEngine = new PixelEngine(800, 480);
             Random random = new Random();
             for (int i = 0; i < 80; i++)
             {
@@ -46,8 +46,7 @@ namespace _2DPixelArtGame
                 _pixelEngine.Scene.Add(grass);
             }
             
-            Texture2D playerTexture = ContentManager.Load(directory + "dude.png");
-            Object player = new Object(new RectangleF(17, 59, 30, 13), new AnimatedSprite(playerTexture, new Rectangle(0, 234, 64, 78)), new Vector2(0, 0), new Vector2(-32, -78), new PlayerController(
+            Object player = new Object(new RectangleF(17, 55, 30, 18), new AnimatedSprite(playerTexture, new Rectangle(0, 234, 64, 78)), new Vector2(100, 200), new Vector2(-32, -78), new PlayerController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 234, 64, 78)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 156, 64, 78)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 0, 64, 78)),
@@ -59,6 +58,7 @@ namespace _2DPixelArtGame
             ), 300);
             _pixelEngine.Camera.CameraSubject = player;
             _pixelEngine.Scene.Add(player);
+            //_pixelEngine.DisplayHitboxes = true;
 
             base.Initialize();
         }

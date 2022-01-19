@@ -75,6 +75,8 @@ namespace _2DPixelArtEngine
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
             spriteBatch.Draw(Sprite.Texture, new Rectangle((int)(Position + SpriteOffset + offset).X, (int)(Position + SpriteOffset + offset).Y, (int)_scaledTexture.X, (int)_scaledTexture.Y), Sprite.Cropping, Color);
+            if (Parent.Parent.DisplayHitboxes)
+                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetHitboxBounds(offset).X, (int)GetHitboxBounds(offset).Y, (int)GetHitboxBounds(offset).Width, (int)GetHitboxBounds(offset).Height), Color.Red * 0.5f);
         }
 
         public RectangleF GetBounds(Vector2 offset = new Vector2())

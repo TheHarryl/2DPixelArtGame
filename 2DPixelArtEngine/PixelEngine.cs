@@ -11,7 +11,7 @@ namespace _2DPixelArtEngine
 {
     public class PixelEngine
     {
-        private GraphicsDevice _graphicsDevice;
+        //private GraphicsDevice _graphicsDevice;
 
         private int _width;
         private int _height;
@@ -66,9 +66,9 @@ namespace _2DPixelArtEngine
 
         public int UpdateRadiusInChunks;
 
-        public PixelEngine(GraphicsDevice graphicsDevice, int width, int height, int updateRadiusInChunks = 5, int chunkSize = 320)//, int pixelRatio = 3)
+        public PixelEngine(/*GraphicsDevice graphicsDevice, */int width, int height, int updateRadiusInChunks = 5, int chunkSize = 320)//, int pixelRatio = 3)
         {
-            _graphicsDevice = graphicsDevice;
+            //_graphicsDevice = graphicsDevice;
 
             //PixelRatio = pixelRatio;
             Width = width;
@@ -121,15 +121,6 @@ namespace _2DPixelArtEngine
             {
                 renderableScene[i].Draw(spriteBatch, topLeft);
             }
-        }
-
-        public Texture2D ImportTexture(string fileLocation)
-        {
-            FileStream fileStream = new FileStream(fileLocation, FileMode.Open);
-            Texture2D texture = Texture2D.FromStream(_graphicsDevice, fileStream);
-            fileStream.Dispose();
-
-            return texture;
         }
     }
 }

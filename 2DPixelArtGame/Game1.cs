@@ -27,9 +27,11 @@ namespace _2DPixelArtGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            System.Diagnostics.Debug.WriteLine(Directory.GetCurrentDirectory());
-            _pixelEngine = new PixelEngine(_graphics.GraphicsDevice, 800, 480);
-            Texture2D grassTexture = _pixelEngine.ImportTexture("C:/Users/harry/Desktop/2DPixelArtGame/2DPixelArtGame/sprites/grass.png");
+            ContentManager.Initialize(GraphicsDevice);
+            string directory = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "\\sprites\\";
+
+            _pixelEngine = new PixelEngine(800, 480);
+            Texture2D grassTexture = ContentManager.Load(directory + "grass.png");
             Random random = new Random();
             for (int i = 0; i < 80; i++)
             {
@@ -44,7 +46,7 @@ namespace _2DPixelArtGame
                 _pixelEngine.Scene.Add(grass);
             }
             
-            Texture2D playerTexture = _pixelEngine.ImportTexture("C:/Users/harry/Desktop/2DPixelArtGame/2DPixelArtGame/sprites/dude.png");
+            Texture2D playerTexture = ContentManager.Load(directory + "dude.png");
             Object player = new Object(new RectangleF(17, 59, 30, 13), new AnimatedSprite(playerTexture, new Rectangle(0, 234, 64, 78)), new Vector2(0, 0), new Vector2(-32, -78), new PlayerController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 234, 64, 78)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 156, 64, 78)),

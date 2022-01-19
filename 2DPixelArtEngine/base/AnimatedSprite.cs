@@ -73,7 +73,7 @@ namespace _2DPixelArtEngine
             }
             if (Paused) return;
 
-            int currentFrame = (int)((gameTime.TotalGameTime - _timeStarted).TotalSeconds / FramesPerSecond);
+            int currentFrame = (int)((gameTime.TotalGameTime - _timeStarted).TotalSeconds * FramesPerSecond);
             if (currentFrame >= TotalFrames)
             {
                 Done = true;
@@ -92,6 +92,7 @@ namespace _2DPixelArtEngine
             _timeStarted = GlobalTime.Timestamp;
             _timePaused = new TimeSpan(0);
             Paused = false;
+            Done = false;
         }
     }
 }

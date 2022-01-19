@@ -15,8 +15,8 @@ namespace _2DPixelArtEngine
         public ChunkPosition Chunk;
 
         public Sprite Sprite;
-        private Controller _controller;
-        public Controller Controller
+        private BaseController _controller;
+        public BaseController Controller
         {
             get => _controller;
             set
@@ -27,17 +27,20 @@ namespace _2DPixelArtEngine
         }
 
         public Vector2 Position;
+        public Vector2 SpriteOffset;
         public Color Color = Color.White;
 
         private Vector2 _scale;
-        private Vector2 _targetSize;
+        private Vector2 _scaledTexture;
+        private RectangleF _scaledHitbox;
         public Vector2 Scale
         {
             get => _scale;
             set
             {
                 _scale = value;
-                _targetSize = new Vector2(Sprite.Texture.Bounds.Width * _scale.X, Sprite.Texture.Bounds.Height * _scale.Y);
+                _scaledTexture = new Vector2(Sprite.Cropping.Width * _scale.X, Sprite.Cropping.Height * _scale.Y);
+                _scaledHitbox = new RectangleF(Hitbox.X * Scale.X, Hitbox.Y * Scale.Y, Hitbox.Width * Scale.X, Hitbox.Height * Scale.Y);
             }
         }
 
@@ -46,38 +49,42 @@ namespace _2DPixelArtEngine
         public float Speed;
         public bool Collideable;
 
-        public Object(RectangleF hitbox, Sprite sprite, Vector2 position = new Vector2(), Controller? controller = null, float speed = 0f, bool collideable = true)
+        public Object(RectangleF hitbox, Sprite sprite, Vector2 position = new Vector2(), Vector2 spriteOffset = new Vector2(), BaseController? controller = null, float speed = 0f, bool collideable = true)
         {
             Sprite = sprite;
-            if (controller == null)
-                Controller = new Controller();
-            Scale = Vector2.One;
+            Controller = controller;
+            if (Controller == null)
+                Controller = new BaseController();
             Position = position;
+            SpriteOffset = spriteOffset;
             Hitbox = hitbox;
             Direction = Vector2.Zero;
             Speed = speed;
             Collideable = collideable;
+            Scale = Vector2.One;
         }
 
         public virtual void Update(GameTime gameTime)
         {
             Sprite.Update(gameTime);
             Controller.Update(gameTime);
+
+            Position += Direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
-            spriteBatch.Draw(Sprite.Texture, new Rectangle((int)(Position + Sprite.Offset + offset).X, (int)(Position + Sprite.Offset + offset).Y, (int)_targetSize.X, (int)_targetSize.Y), Sprite.Cropping, Color);
+            spriteBatch.Draw(Sprite.Texture, new Rectangle((int)(Position + SpriteOffset + offset).X, (int)(Position + SpriteOffset + offset).Y, (int)_scaledTexture.X, (int)_scaledTexture.Y), Sprite.Cropping, Color);
         }
 
         public RectangleF GetBounds(Vector2 offset = new Vector2())
         {
-            return new RectangleF((Position + offset).X, (Position + offset).Y, (float)Math.Ceiling(_targetSize.X), (float)Math.Ceiling(_targetSize.Y));
+            return new RectangleF((Position + SpriteOffset + offset).X, (Position + SpriteOffset + offset).Y, (float)Math.Ceiling(_scaledTexture.X), (float)Math.Ceiling(_scaledTexture.Y));
         }
 
         public RectangleF GetHitboxBounds(Vector2 offset = new Vector2())
         {
-            return new RectangleF((Position + offset).X + Hitbox.X, (Position + offset).Y + Hitbox.Y, Hitbox.Width, Hitbox.Height);
+            return new RectangleF((Position + SpriteOffset + offset).X + _scaledHitbox.X, (Position + SpriteOffset + offset).Y + _scaledHitbox.Y, _scaledHitbox.Width, _scaledHitbox.Height);
         }
     }
 }

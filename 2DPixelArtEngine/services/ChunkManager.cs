@@ -20,6 +20,7 @@ namespace _2DPixelArtEngine
 
     public class ChunkManager
     {
+        public PixelEngine Parent;
         private Dictionary<ChunkPosition, List<Object>> _chunks;
         private int _chunkSize;
 
@@ -31,18 +32,18 @@ namespace _2DPixelArtEngine
 
         public void ReindexChunks()
         {
-            foreach (KeyValuePair<ChunkPosition, List<Object>> chunk in _chunks)
+            for (int i = 0; i < _chunks.Count; i++)
             {
-                for (int i = 0; i < chunk.Value.Count; i++)
+                KeyValuePair<ChunkPosition, List<Object>> chunk = _chunks.ElementAt(i);
+                for (int x = 0; x < chunk.Value.Count; x++)
                 {
-                    Object obj = chunk.Value[i];
+                    Object obj = chunk.Value[x];
                     if (obj.Direction == Vector2.Zero || obj.Speed == 0f) continue;
                     ChunkPosition objChunk = GetChunkPosition(obj.Position);
                     if (chunk.Key.X != objChunk.X || chunk.Key.Y != objChunk.Y)
                     {
                         chunk.Value.Remove(obj);
-                        _chunks[objChunk].Add(obj);
-                        obj.Chunk = objChunk;
+                        Add(obj);
                     }
                 }
             }
@@ -61,11 +62,10 @@ namespace _2DPixelArtEngine
         {
             if (!_chunks.ContainsKey(chunk)) return;
             if (sort)
-                _chunks[chunk].OrderByDescending(o => o.Position.Y).ToList();
-            for (int i = 0; i < _chunks[chunk].Count; i++)
+                _chunks[chunk] = _chunks[chunk].OrderByDescending(o => o.GetHitboxBounds().Bottom).ToList();
+            for (int i = _chunks[chunk].Count - 1; i >= 0; i--)
             {
-                if (screenBounds.IntersectsWith(_chunks[chunk][i].GetBounds()))
-                    _chunks[chunk][i].Draw(spriteBatch, offset);
+                _chunks[chunk][i].Draw(spriteBatch, offset);
             }
         }
 
@@ -97,7 +97,12 @@ namespace _2DPixelArtEngine
 
         public ChunkPosition GetChunkPosition(Vector2 position)
         {
-            return new ChunkPosition((int)Math.Ceiling(position.X / _chunkSize), (int)Math.Ceiling(position.Y / _chunkSize));
+            return GetChunkPosition(position.X, position.Y);
+        }
+
+        public ChunkPosition GetChunkPosition(float x, float y)
+        {
+            return new ChunkPosition((int)Math.Ceiling(x / _chunkSize), (int)Math.Ceiling(y / _chunkSize));
         }
 
         public List<Object> GetChunk(ChunkPosition chunk)
@@ -112,17 +117,22 @@ namespace _2DPixelArtEngine
             return GetChunk(chunk);
         }
 
-        public List<Object> GetNearbyChunks(ChunkPosition chunk, int chunkRadius = 1)
+        public List<Object> GetChunksInRange(int x, int y, int width, int height)
         {
             List<Object> objects = new List<Object>();
-            for (int y = chunk.Y - 1; y <= chunk.Y + 1; y++)
+            for (int y1 = y; y1 <= height; y1++)
             {
-                for (int x = chunk.X - 1; x <= chunk.X + 1; x++)
+                for (int x1 = x; x1 <= width; x1++)
                 {
-                    objects = objects.Concat(GetChunk(x, y)).ToList();
+                    objects = objects.Concat(GetChunk(x1, y1)).ToList();
                 }
             }
             return objects;
+        }
+
+        public List<Object> GetNearbyChunks(ChunkPosition chunk, int chunkRadius = 1)
+        {
+            return GetChunksInRange(chunk.X - chunkRadius, chunk.Y - chunkRadius, chunkRadius * 2, chunkRadius * 2);
         }
     }
 }

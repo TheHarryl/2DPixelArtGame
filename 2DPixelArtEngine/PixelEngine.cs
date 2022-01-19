@@ -40,8 +40,26 @@ namespace _2DPixelArtEngine
         //public int PixelRatio;
 
         public Camera Camera;
-        public ChunkManager Scene;
-        public ChunkManager Background;
+        private ChunkManager _scene;
+        private ChunkManager _background;
+        public ChunkManager Scene
+        {
+            get => _scene;
+            set
+            {
+                _scene = value;
+                _scene.Parent = this;
+            }
+        }
+        public ChunkManager Background
+        {
+            get => _background;
+            set
+            {
+                _background = value;
+                _background.Parent = this;
+            }
+        }
 
         //public Color[] Screen;
         //private Texture2D _screen;
@@ -60,8 +78,10 @@ namespace _2DPixelArtEngine
             //Screen = new Color[_pixelWidth * _pixelHeight];
             //_screen = new Texture2D(_graphicsDevice, _pixelWidth, _pixelHeight);
 
+            Camera = new Camera();
             Scene = new ChunkManager(chunkSize);
             Background = new ChunkManager(chunkSize);
+            
         }
 
         public void Update(GameTime gameTime, Vector2 offset = new Vector2())
@@ -84,22 +104,22 @@ namespace _2DPixelArtEngine
         {
             if (Camera == null)
                 Camera = new Camera();
-            Vector2 origin = offset - Camera.Position;
-            ChunkPosition originChunk = Scene.GetChunkPosition(origin);
-            RectangleF screenBounds = new RectangleF(origin.X - Width / 2f, origin.Y - Height / 2f, Width, Height);
-            for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
+            RectangleF screenBounds = new RectangleF(Camera.Position.X - Width / 2f, Camera.Position.Y - Height / 2f, Width, Height);
+            ChunkPosition topLeftChunk = Scene.GetChunkPosition(screenBounds.X, screenBounds.Y);
+            ChunkPosition bottomRightChunk = Scene.GetChunkPosition(screenBounds.Right, screenBounds.Bottom);
+
+            Vector2 topLeft = offset - Camera.Position + new Vector2(Width / 2f, Height / 2f);
+            List<Object> renderableBackground = Background.GetChunksInRange(topLeftChunk.X, topLeftChunk.Y, bottomRightChunk.X - topLeftChunk.X, bottomRightChunk.Y - topLeftChunk.Y);
+            renderableBackground = renderableBackground.OrderByDescending(o => o.GetHitboxBounds().Bottom).ToList();
+            for (int i = renderableBackground.Count - 1; i >= 0; i--)
             {
-                for (int x = originChunk.X - UpdateRadiusInChunks; x <= originChunk.X + UpdateRadiusInChunks; x++)
-                {
-                    Background.DrawChunk(spriteBatch, screenBounds, new ChunkPosition(x, y), offset, true);
-                }
+                renderableBackground[i].Draw(spriteBatch, topLeft);
             }
-            for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
+            List<Object> renderableScene = Scene.GetChunksInRange(topLeftChunk.X, topLeftChunk.Y, bottomRightChunk.X - topLeftChunk.X, bottomRightChunk.Y - topLeftChunk.Y);
+            renderableScene = renderableScene.OrderByDescending(o => o.GetHitboxBounds().Bottom).ToList();
+            for (int i = renderableScene.Count - 1; i >= 0; i--)
             {
-                for (int x = originChunk.X - UpdateRadiusInChunks; x <= originChunk.X + UpdateRadiusInChunks; x++)
-                {
-                    Scene.DrawChunk(spriteBatch, screenBounds, new ChunkPosition(x, y), offset, true);
-                }
+                renderableScene[i].Draw(spriteBatch, topLeft);
             }
         }
 

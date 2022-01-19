@@ -6,12 +6,12 @@ using System.Text;
 
 namespace _2DPixelArtEngine
 {
-    public class Controller
+    public class BaseController
     {
         public Object Parent;
         public int TeamID;
 
-        public Controller(int teamID = 0)
+        public BaseController(int teamID = 0)
         {
             TeamID = teamID;
         }

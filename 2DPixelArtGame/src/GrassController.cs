@@ -8,7 +8,7 @@ using Object = _2DPixelArtEngine.Object;
 
 namespace _2DPixelArtGame
 {
-    public class GrassController : Controller
+    public class GrassController : BaseController
     {
         public AnimatedSprite Normal;
         public AnimatedSprite BrushLeft;
@@ -16,7 +16,7 @@ namespace _2DPixelArtGame
         public AnimatedSprite UnbrushLeft;
         public AnimatedSprite UnbrushRight;
 
-        public GrassController(AnimatedSprite normal, AnimatedSprite brushLeft, AnimatedSprite brushRight, AnimatedSprite unbrushLeft, AnimatedSprite unbrushRight)
+        public GrassController(AnimatedSprite normal, AnimatedSprite brushLeft, AnimatedSprite brushRight, AnimatedSprite unbrushLeft, AnimatedSprite unbrushRight) : base(-1)
         {
             Normal = normal;
             BrushLeft = brushLeft;
@@ -27,33 +27,34 @@ namespace _2DPixelArtGame
         
         public override void Update(GameTime gameTime)
         {
-            if (Parent.Sprite == Normal)
+            if (Parent.Sprite == Normal || Parent.Sprite == BrushLeft || Parent.Sprite == BrushRight)
             {
                 List<Object> objects = Parent.Parent.GetNearbyChunks(Parent.Chunk);
                 RectangleF hitbox = Parent.GetHitboxBounds();
                 for (int i = 0; i < objects.Count; i++)
                 {
                     RectangleF objectHitbox = objects[i].GetHitboxBounds();
-                    if (!hitbox.IntersectsWith(objectHitbox)) continue;
-                    if (objectHitbox.X + (objectHitbox.Width / 2) < hitbox.X + (hitbox.Width / 2))
+                    if (!hitbox.IntersectsWith(objectHitbox) || objects[i].Controller.TeamID == -1) continue;
+                    if (objectHitbox.X + (objectHitbox.Width / 2) > hitbox.X + (hitbox.Width / 2) && Parent.Sprite != BrushLeft)
                     {
                         Parent.Sprite = BrushLeft;
                         BrushLeft.Restart();
-                    } else
+                    } else if (objectHitbox.X + (objectHitbox.Width / 2) <= hitbox.X + (hitbox.Width / 2) && Parent.Sprite != BrushRight)
                     {
                         Parent.Sprite = BrushRight;
                         BrushRight.Restart();
                     }
                     return;
                 }
-            } else if (Parent.Sprite == BrushLeft || Parent.Sprite == BrushRight)
+            }
+            if (Parent.Sprite == BrushLeft || Parent.Sprite == BrushRight)
             {
                 List<Object> objects = Parent.Parent.GetNearbyChunks(Parent.Chunk);
                 RectangleF hitbox = Parent.GetHitboxBounds();
                 for (int i = 0; i < objects.Count; i++)
                 {
                     RectangleF objectHitbox = objects[i].GetHitboxBounds();
-                    if (hitbox.IntersectsWith(objectHitbox))
+                    if (hitbox.IntersectsWith(objectHitbox) && objects[i].Controller.TeamID != -1)
                         return;
                 }
                 if (Parent.Sprite == BrushLeft)
@@ -75,6 +76,9 @@ namespace _2DPixelArtGame
                 if (!UnbrushRight.Done) return;
                 Parent.Sprite = Normal;
                 Normal.Restart();
+            } else
+            {
+                Parent.Sprite = Normal;
             }
         }
     }

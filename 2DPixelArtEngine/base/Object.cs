@@ -28,7 +28,7 @@ namespace _2DPixelArtEngine
 
         public Vector2 Position;
         public Vector2 SpriteOffset;
-        public Color Color = Color.White;
+        public Color Color;
 
         private Vector2 _scale;
         private Vector2 _scaledTexture;
@@ -62,6 +62,7 @@ namespace _2DPixelArtEngine
             Speed = speed;
             Collideable = collideable;
             Scale = Vector2.One;
+            Color = Color.White
         }
 
         public virtual void Update(GameTime gameTime)

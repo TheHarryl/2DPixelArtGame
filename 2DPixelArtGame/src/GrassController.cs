@@ -31,7 +31,7 @@ namespace _2DPixelArtGame
             {
                 List<Object> objects = Parent.Parent.GetNearbyChunks(Parent.Chunk);
                 RectangleF hitbox = Parent.GetHitboxBounds();
-                Object obj = objects.Find(o => o.GetHitboxBounds().IntersectsWith(hitbox) && o.Controller.Classifier != "grass");
+                Object obj = objects.Find(o => o.Controller.Classifier != "grass" && o.GetHitboxBounds().IntersectsWith(hitbox));
                 if (obj != null)
                 {
                     RectangleF objectHitbox = obj.GetHitboxBounds();
@@ -52,7 +52,7 @@ namespace _2DPixelArtGame
             {
                 List<Object> objects = Parent.Parent.GetNearbyChunks(Parent.Chunk);
                 RectangleF hitbox = Parent.GetHitboxBounds();
-                Object obj = objects.Find(o => o.GetHitboxBounds().IntersectsWith(hitbox) && o.Controller.Classifier != "grass");
+                Object obj = objects.Find(o => o.Controller.Classifier != "grass" && o.GetHitboxBounds().IntersectsWith(hitbox));
                 if (obj != null) return;
                 if (Parent.Sprite == BrushLeft)
                 {

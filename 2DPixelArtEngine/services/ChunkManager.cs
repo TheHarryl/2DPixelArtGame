@@ -30,36 +30,6 @@ namespace _2DPixelArtEngine
             Set(new List<Object>());
         }
 
-        public void Reindex(Object obj)
-        {
-            ChunkPosition objChunk = GetChunkPosition(obj.Position);
-            if (obj.Chunk.X != objChunk.X || obj.Chunk.Y != objChunk.Y)
-            {
-                Remove(obj);
-                Add(obj);
-            }
-        }
-
-        public void UpdateChunk(GameTime gameTime, ChunkPosition chunk)
-        {
-            if (!_chunks.ContainsKey(chunk)) return;
-            for (int i = 0; i < _chunks[chunk].Count; i++)
-            {
-                _chunks[chunk][i].Update(gameTime);
-            }
-        }
-
-        public void DrawChunk(SpriteBatch spriteBatch, RectangleF screenBounds, ChunkPosition chunk, Vector2 offset = new Vector2(), bool sort = false)
-        {
-            if (!_chunks.ContainsKey(chunk)) return;
-            if (sort)
-                _chunks[chunk] = _chunks[chunk].OrderByDescending(o => o.GetHitboxBounds().Bottom).ToList();
-            for (int i = _chunks[chunk].Count - 1; i >= 0; i--)
-            {
-                _chunks[chunk][i].Draw(spriteBatch, offset);
-            }
-        }
-
         public void Set(List<Object> objects)
         {
             _chunks = new Dictionary<ChunkPosition, List<Object>>();
@@ -91,6 +61,16 @@ namespace _2DPixelArtEngine
             ChunkPosition chunk = obj.Chunk;
             if (_chunks[chunk].Contains(obj))
                 _chunks[chunk].Remove(obj);
+        }
+
+        public void Reindex(Object obj)
+        {
+            ChunkPosition objChunk = GetChunkPosition(obj.Position);
+            if (obj.Chunk.X != objChunk.X || obj.Chunk.Y != objChunk.Y)
+            {
+                Remove(obj);
+                Add(obj);
+            }
         }
 
         public ChunkPosition GetChunkPosition(Vector2 position)

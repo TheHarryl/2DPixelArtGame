@@ -17,6 +17,9 @@ namespace _2DPixelArtGame
         private SpriteBatch _spriteBatch;
         private PixelEngine _pixelEngine;
 
+        private int frameCount = 0;
+        private DateTime startFrameCount = DateTime.Now;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -133,6 +136,14 @@ namespace _2DPixelArtGame
             _pixelEngine.Draw(_spriteBatch);
 
             _spriteBatch.End();
+
+            frameCount++;
+            if (DateTime.Now - startFrameCount >= new TimeSpan(0, 0, 1))
+            {
+                System.Diagnostics.Debug.WriteLine(frameCount + " FPS");
+                frameCount = 0;
+                startFrameCount = DateTime.Now;
+            }
 
             base.Draw(gameTime);
         }

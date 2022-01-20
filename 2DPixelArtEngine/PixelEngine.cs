@@ -90,14 +90,11 @@ namespace _2DPixelArtEngine
         public void Update(GameTime gameTime, Vector2 offset = new Vector2())
         {
             GlobalTime.Update(gameTime);
-            ChunkPosition originChunk = Scene.GetChunkPosition(offset - Camera.Position);
-            for (int y = originChunk.Y - UpdateRadiusInChunks; y <= originChunk.Y + UpdateRadiusInChunks; y++)
+            ChunkPosition originChunk = Scene.GetChunkPosition(Camera.Position);
+            List<Object> objects = Scene.GetNearbyChunks(originChunk, UpdateRadiusInChunks).Concat(Background.GetNearbyChunks(originChunk, UpdateRadiusInChunks)).ToList();
+            for (int i = 0; i < objects.Count; i++)
             {
-                for (int x = originChunk.X - UpdateRadiusInChunks; x <= originChunk.X + UpdateRadiusInChunks; x++)
-                {
-                    Scene.UpdateChunk(gameTime, new ChunkPosition(x, y));
-                    Background.UpdateChunk(gameTime, new ChunkPosition(x, y));
-                }
+                objects[i].Update(gameTime);
             }
         }
 

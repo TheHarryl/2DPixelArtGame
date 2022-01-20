@@ -33,7 +33,7 @@ namespace _2DPixelArtGame
             Texture2D grassTexture = ContentManager.Load(directory + "grass.png");
             _pixelEngine = new PixelEngine(800, 480);
             Random random = new Random();
-            for (int i = 0; i < 80; i++)
+            /*for (int i = 0; i < 80; i++)
             {
                 Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(200 + random.Next(0, 200), 100 + random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
                     new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
@@ -44,8 +44,8 @@ namespace _2DPixelArtGame
                 ));
                 grass.Scale = new Vector2(2, 2);
                 _pixelEngine.Scene.Add(grass);
-            }
-            /*
+            }*/
+            
             for (int i = 0; i < 160*3; i++)
             {
                 Object grass = new Object(new RectangleF(4, 33, 17, 12), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-300 + random.Next(0, 300), -100 + random.Next(0, 800)), new Vector2(-12.5f, -42), new GrassController(
@@ -57,7 +57,7 @@ namespace _2DPixelArtGame
                 ));
                 grass.Scale = new Vector2(2, 2);
                 _pixelEngine.Scene.Add(grass);
-            }*/
+            }
             
             Object player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-32, -78), new PlayerController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),

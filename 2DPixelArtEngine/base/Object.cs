@@ -26,7 +26,16 @@ namespace _2DPixelArtEngine
             }
         }
 
-        public Vector2 Position;
+        private Vector2 _position;
+        public Vector2 Position
+        {
+            get => _position;
+            set
+            {
+                _position = value;
+                Parent.Reindex(this);
+            }
+        }
         public Vector2 SpriteOffset;
         public Color Color;
 
@@ -55,7 +64,7 @@ namespace _2DPixelArtEngine
             Controller = controller;
             if (Controller == null)
                 Controller = new BaseController();
-            Position = position;
+            _position = position;
             SpriteOffset = spriteOffset;
             Hitbox = hitbox;
             Direction = Vector2.Zero;

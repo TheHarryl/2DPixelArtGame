@@ -30,22 +30,13 @@ namespace _2DPixelArtEngine
             Set(new List<Object>());
         }
 
-        public void ReindexChunks()
+        public void Reindex(Object obj)
         {
-            for (int i = 0; i < _chunks.Count; i++)
+            ChunkPosition objChunk = GetChunkPosition(obj.Position);
+            if (obj.Chunk.X != objChunk.X || obj.Chunk.Y != objChunk.Y)
             {
-                KeyValuePair<ChunkPosition, List<Object>> chunk = _chunks.ElementAt(i);
-                for (int x = 0; x < chunk.Value.Count; x++)
-                {
-                    Object obj = chunk.Value[x];
-                    if (obj.Direction == Vector2.Zero || obj.Speed == 0f) continue;
-                    ChunkPosition objChunk = GetChunkPosition(obj.Position);
-                    if (chunk.Key.X != objChunk.X || chunk.Key.Y != objChunk.Y)
-                    {
-                        chunk.Value.Remove(obj);
-                        Add(obj);
-                    }
-                }
+                Remove(obj);
+                Add(obj);
             }
         }
 
@@ -97,7 +88,7 @@ namespace _2DPixelArtEngine
 
         public void Remove(Object obj)
         {
-            ChunkPosition chunk = GetChunkPosition(obj.Position);
+            ChunkPosition chunk = obj.Chunk;
             if (_chunks[chunk].Contains(obj))
                 _chunks[chunk].Remove(obj);
         }

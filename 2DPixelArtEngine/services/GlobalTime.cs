@@ -3,7 +3,7 @@ using System;
 
 namespace _2DPixelArtEngine
 {
-    static class GlobalTime
+    public static class GlobalTime
     {
         public static TimeSpan Timestamp;
 

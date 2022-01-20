@@ -35,7 +35,7 @@ namespace _2DPixelArtGame
             Random random = new Random();
             for (int i = 0; i < 80; i++)
             {
-                Object grass = new Object(new RectangleF(4, 33, 17, 12), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(200 + random.Next(0, 200), 100 + random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
+                Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(200 + random.Next(0, 200), 100 + random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
                     new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
                     new AnimatedSprite(grassTexture, new Rectangle(25, 42, 25, 42), 4, 4, 30, false),
                     new AnimatedSprite(grassTexture, new Rectangle(125, 0, 25, 42), 4, 4, 30, false),
@@ -45,19 +45,62 @@ namespace _2DPixelArtGame
                 grass.Scale = new Vector2(2, 2);
                 _pixelEngine.Scene.Add(grass);
             }
+            /*
+            for (int i = 0; i < 160*3; i++)
+            {
+                Object grass = new Object(new RectangleF(4, 33, 17, 12), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-300 + random.Next(0, 300), -100 + random.Next(0, 800)), new Vector2(-12.5f, -42), new GrassController(
+                    new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
+                    new AnimatedSprite(grassTexture, new Rectangle(25, 42, 25, 42), 4, 4, 30, false),
+                    new AnimatedSprite(grassTexture, new Rectangle(125, 0, 25, 42), 4, 4, 30, false),
+                    new AnimatedSprite(grassTexture, new Rectangle(25, 0, 25, 42), 4, 4, 15, false),
+                    new AnimatedSprite(grassTexture, new Rectangle(125, 42, 25, 42), 4, 4, 15, false)
+                ));
+                grass.Scale = new Vector2(2, 2);
+                _pixelEngine.Scene.Add(grass);
+            }*/
             
-            Object player = new Object(new RectangleF(17, 55, 30, 18), new AnimatedSprite(playerTexture, new Rectangle(0, 234, 64, 78)), new Vector2(100, 200), new Vector2(-32, -78), new PlayerController(
-                new AnimatedSprite(playerTexture, new Rectangle(0, 234, 64, 78)),
-                new AnimatedSprite(playerTexture, new Rectangle(0, 156, 64, 78)),
-                new AnimatedSprite(playerTexture, new Rectangle(0, 0, 64, 78)),
-                new AnimatedSprite(playerTexture, new Rectangle(0, 78, 64, 78)),
-                new AnimatedSprite(playerTexture, new Rectangle(64, 234, 64, 78), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(64, 156, 64, 78), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(64, 0, 64, 78), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(64, 78, 64, 78), 4, 4, 8)
+            Object player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-32, -78), new PlayerController(
+                new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(0, 39, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 117, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 234, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 273, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 156, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 195, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 117, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8)
             ), 300);
+            player.Scale = new Vector2(2, 2);
             _pixelEngine.Camera.CameraSubject = player;
             _pixelEngine.Scene.Add(player);
+
+            Object dummy = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(400, 200), new Vector2(-32, -78), new EntityController(
+                new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(0, 39, 32, 39)),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 117, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 234, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 273, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 156, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 195, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 117, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
+                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8)
+            ), 300);
+            dummy.Scale = new Vector2(2, 2);
+            _pixelEngine.Scene.Add(dummy);
             //_pixelEngine.DisplayHitboxes = true;
 
             base.Initialize();

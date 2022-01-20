@@ -9,11 +9,12 @@ namespace _2DPixelArtEngine
     public class BaseController
     {
         public Object Parent;
-        public int TeamID;
+        public string Classifier;
+        public int ActionTag;
 
-        public BaseController(int teamID = 0)
+        public BaseController(string classifier = "none")
         {
-            TeamID = teamID;
+            Classifier = classifier;
         }
 
         public virtual void Update(GameTime gameTime)

@@ -16,7 +16,7 @@ namespace _2DPixelArtGame
         public AnimatedSprite UnbrushLeft;
         public AnimatedSprite UnbrushRight;
 
-        public GrassController(AnimatedSprite normal, AnimatedSprite brushLeft, AnimatedSprite brushRight, AnimatedSprite unbrushLeft, AnimatedSprite unbrushRight) : base(-1)
+        public GrassController(AnimatedSprite normal, AnimatedSprite brushLeft, AnimatedSprite brushRight, AnimatedSprite unbrushLeft, AnimatedSprite unbrushRight) : base("grass")
         {
             Normal = normal;
             BrushLeft = brushLeft;
@@ -34,7 +34,7 @@ namespace _2DPixelArtGame
                 for (int i = 0; i < objects.Count; i++)
                 {
                     RectangleF objectHitbox = objects[i].GetHitboxBounds();
-                    if (!hitbox.IntersectsWith(objectHitbox) || objects[i].Controller.TeamID == -1) continue;
+                    if (!hitbox.IntersectsWith(objectHitbox) || objects[i].Controller.Classifier == "grass") continue;
                     if (objectHitbox.X + (objectHitbox.Width / 2) > hitbox.X + (hitbox.Width / 2) && Parent.Sprite != BrushLeft)
                     {
                         Parent.Sprite = BrushLeft;
@@ -54,7 +54,7 @@ namespace _2DPixelArtGame
                 for (int i = 0; i < objects.Count; i++)
                 {
                     RectangleF objectHitbox = objects[i].GetHitboxBounds();
-                    if (hitbox.IntersectsWith(objectHitbox) && objects[i].Controller.TeamID != -1)
+                    if (hitbox.IntersectsWith(objectHitbox) && objects[i].Controller.Classifier != "grass")
                         return;
                 }
                 if (Parent.Sprite == BrushLeft)

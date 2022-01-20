@@ -95,6 +95,13 @@ namespace _2DPixelArtEngine
             _chunks[chunk].Add(obj);
         }
 
+        public void Remove(Object obj)
+        {
+            ChunkPosition chunk = GetChunkPosition(obj.Position);
+            if (_chunks[chunk].Contains(obj))
+                _chunks[chunk].Remove(obj);
+        }
+
         public ChunkPosition GetChunkPosition(Vector2 position)
         {
             return GetChunkPosition(position.X, position.Y);

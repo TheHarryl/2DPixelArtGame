@@ -89,5 +89,10 @@ namespace _2DPixelArtEngine
         {
             return new RectangleF((Position + SpriteOffset + offset).X + _scaledHitbox.X, (Position + SpriteOffset + offset).Y + _scaledHitbox.Y, _scaledHitbox.Width, _scaledHitbox.Height);
         }
+
+        public void Delete()
+        {
+            Parent.Remove(this);
+        }
     }
 }

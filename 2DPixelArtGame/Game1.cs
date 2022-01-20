@@ -31,11 +31,25 @@ namespace _2DPixelArtGame
         {
             // TODO: Add your initialization logic here
             string directory = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "\\sprites\\";
-            ContentManager.Initialize(GraphicsDevice);
-            Texture2D playerTexture = ContentManager.Load(directory + "dude.png");
-            Texture2D grassTexture = ContentManager.Load(directory + "grass.png");
+            ContentManager.Initialize(GraphicsDevice, directory);
+            Texture2D playerTexture = ContentManager.Load("dude.png");
+            Texture2D grassTexture = ContentManager.Load("grass.png");
             _pixelEngine = new PixelEngine(800, 480);
-            Random random = new Random();
+            Random random = new Random((int)GlobalTime.Timestamp.TotalMilliseconds);
+
+            /*int z = 0;
+            for (int y = 5; y >= -5; y--)
+            {
+                for (int x = -30; x <= 30; x++)
+                {
+                    Sprite floorSprite = new Sprite(ContentManager.Load("tileset.png"));
+                    Object floor = new Object(new RectangleF(0, 0, 64, 64), floorSprite, new Vector2(x * floorSprite.Cropping.Width * 2, y * floorSprite.Cropping.Height * 2), new Vector2(-25, 25), new FloorController(floorSprite, z * 60 + (float)random.NextDouble() * 6, 60));
+                    floor.Scale = new Vector2(2, 2);
+                    _pixelEngine.Background.Add(floor);
+                }
+                z++;
+            }*/
+
             /*for (int i = 0; i < 80; i++)
             {
                 Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(200 + random.Next(0, 200), 100 + random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
@@ -62,7 +76,7 @@ namespace _2DPixelArtGame
                 _pixelEngine.Scene.Add(grass);
             }
             
-            Object player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-32, -78), new PlayerController(
+            Object player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-32, -60), new PlayerController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)),
@@ -75,16 +89,16 @@ namespace _2DPixelArtGame
                 new AnimatedSprite(playerTexture, new Rectangle(160, 273, 32, 39), 4, 4, 8, false),
                 new AnimatedSprite(playerTexture, new Rectangle(160, 156, 32, 39), 4, 4, 8, false),
                 new AnimatedSprite(playerTexture, new Rectangle(160, 195, 32, 39), 4, 4, 8, false),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 117, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8)
+                new AnimatedSprite(playerTexture, new Rectangle(160, 78, 32, 39), 4, 4, 16, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 117, 32, 39), 4, 4, 16, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 39, 32, 39), 4, 4, 16, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 0, 32, 39), 4, 4, 16, false)
             ), 300);
             player.Scale = new Vector2(2, 2);
             _pixelEngine.Camera.CameraSubject = player;
             _pixelEngine.Scene.Add(player);
 
-            Object dummy = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(400, 200), new Vector2(-32, -78), new EntityController(
+            Object dummy = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(400, 200), new Vector2(-32, -78), new EnemyController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)),
@@ -97,10 +111,10 @@ namespace _2DPixelArtGame
                 new AnimatedSprite(playerTexture, new Rectangle(160, 273, 32, 39), 4, 4, 8, false),
                 new AnimatedSprite(playerTexture, new Rectangle(160, 156, 32, 39), 4, 4, 8, false),
                 new AnimatedSprite(playerTexture, new Rectangle(160, 195, 32, 39), 4, 4, 8, false),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 117, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8)
+                new AnimatedSprite(playerTexture, new Rectangle(160, 78, 32, 39), 4, 4, 16, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 117, 32, 39), 4, 4, 16, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 39, 32, 39), 4, 4, 16, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 0, 32, 39), 4, 4, 16, false)
             ), 300);
             dummy.Scale = new Vector2(2, 2);
             _pixelEngine.Scene.Add(dummy);
@@ -122,7 +136,6 @@ namespace _2DPixelArtGame
                 Exit();
 
             // TODO: Add your update logic here
-            _pixelEngine.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -132,6 +145,7 @@ namespace _2DPixelArtGame
             GraphicsDevice.Clear(new Color(37, 146, 79));
 
             // TODO: Add your drawing code here
+            _pixelEngine.Update(gameTime);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             _pixelEngine.Draw(_spriteBatch);
 

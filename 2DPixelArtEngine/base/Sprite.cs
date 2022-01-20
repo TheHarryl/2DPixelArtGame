@@ -11,7 +11,7 @@ namespace _2DPixelArtEngine
         public Texture2D Texture;
         public Rectangle Cropping;
 
-        public Sprite(Texture2D texture, Rectangle? cropping)
+        public Sprite(Texture2D texture, Rectangle? cropping = null)
         {
             Texture = texture;
             if (cropping != null)

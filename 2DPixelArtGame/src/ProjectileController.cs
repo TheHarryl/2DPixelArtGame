@@ -15,8 +15,10 @@ namespace _2DPixelArtGame
 
         private TimeSpan Timestamp;
 
-        public ProjectileController(float duration, string classifier) : base(classifier)
+        public ProjectileController(string classifier, int minDamage, int maxDamage, float duration = 999) : base(classifier)
         {
+            Properties.Add("MinDamage", minDamage);
+            Properties.Add("MaxDamage", maxDamage);
             Duration = duration;
             Timestamp = GlobalTime.Timestamp;
         }

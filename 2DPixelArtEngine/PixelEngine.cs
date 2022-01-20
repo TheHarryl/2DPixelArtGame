@@ -102,7 +102,7 @@ namespace _2DPixelArtEngine
         {
             if (Camera == null)
                 Camera = new Camera();
-            RectangleF screenBounds = new RectangleF(Camera.Position.X - Width / 2f, Camera.Position.Y - Height / 2f, Width, Height);
+            RectangleF screenBounds = new RectangleF(Camera.Position.X - Width / 2f, Camera.Position.Y - Height / 2f, Width * 2, Height * 2);
             ChunkPosition topLeftChunk = Scene.GetChunkPosition(screenBounds.X, screenBounds.Y);
             ChunkPosition bottomRightChunk = Scene.GetChunkPosition(screenBounds.Right, screenBounds.Bottom);
             int width = bottomRightChunk.X - topLeftChunk.X;
@@ -111,16 +111,16 @@ namespace _2DPixelArtEngine
             Vector2 topLeft = offset - Camera.Position + new Vector2(Width / 2f, Height / 2f);
             List<Object> renderableBackground = Background.GetChunksInRange(topLeftChunk.X, topLeftChunk.Y, width, height);
             renderableBackground = renderableBackground.OrderByDescending(o => o.GetHitboxBounds().Bottom).ToList();
-            for (int i = renderableBackground.Count - 1; i >= 0; i--)
+            for (int i = 0; i < renderableBackground.Count; i++)
             {
-                if (renderableBackground[i].GetBounds().IntersectsWith(screenBounds))
+                //if (renderableBackground[i].GetBounds().IntersectsWith(screenBounds))
                     renderableBackground[i].Draw(spriteBatch, topLeft);
             }
             List<Object> renderableScene = Scene.GetChunksInRange(topLeftChunk.X, topLeftChunk.Y, width, height);
-            renderableScene = renderableScene.OrderByDescending(o => o.GetHitboxBounds().Bottom).ToList();
+            renderableScene = renderableScene.OrderByDescending(o => o.Position.Y).ToList();
             for (int i = renderableScene.Count - 1; i >= 0; i--)
             {
-                if (renderableScene[i].GetBounds().IntersectsWith(screenBounds))
+                //if (renderableScene[i].GetBounds().IntersectsWith(screenBounds))
                     renderableScene[i].Draw(spriteBatch, topLeft);
             }
         }

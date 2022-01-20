@@ -11,15 +11,22 @@ namespace _2DPixelArtEngine
         public Object Parent;
         public string Classifier;
         public int ActionTag;
+        public Dictionary<string, object> Properties;
 
         public BaseController(string classifier = "none")
         {
             Classifier = classifier;
+            Properties = new Dictionary<string, object>();
         }
 
         public virtual void Update(GameTime gameTime)
         {
 
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
+        {
+            
         }
     }
 }

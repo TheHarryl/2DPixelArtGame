@@ -32,9 +32,6 @@ namespace _2DPixelArtGame
         public AnimatedSprite KnockLeft;
         public AnimatedSprite KnockRight;
 
-        protected TimeSpan _timeKnocked;
-        public float KnockAmount;
-
         public EntityController(AnimatedSprite idleUp, AnimatedSprite idleDown, AnimatedSprite idleLeft, AnimatedSprite idleRight, AnimatedSprite moveUp, AnimatedSprite moveDown, AnimatedSprite moveLeft, AnimatedSprite moveRight, AnimatedSprite attackUp, AnimatedSprite attackDown, AnimatedSprite attackLeft, AnimatedSprite attackRight, AnimatedSprite knockUp, AnimatedSprite knockDown, AnimatedSprite knockLeft, AnimatedSprite knockRight, string classifier = "entity") : base(classifier)
         {
             IdleUp = idleUp;
@@ -121,6 +118,32 @@ namespace _2DPixelArtGame
                     _attacking = false;
                     Parent.Sprite = IdleRight;
                 }
+            } else if (_knocked)
+            {
+                if (Parent.Sprite == KnockUp && KnockUp.Done)
+                {
+                    _knocked = false;
+                    Parent.Sprite = IdleDown;
+                    Parent.Direction = Vector2.Zero;
+                }
+                else if (Parent.Sprite == KnockDown && KnockDown.Done)
+                {
+                    _knocked = false;
+                    Parent.Sprite = IdleUp;
+                    Parent.Direction = Vector2.Zero;
+                }
+                else if (Parent.Sprite == KnockLeft && KnockLeft.Done)
+                {
+                    _knocked = false;
+                    Parent.Sprite = IdleRight;
+                    Parent.Direction = Vector2.Zero;
+                }
+                else if (Parent.Sprite == KnockRight && KnockRight.Done)
+                {
+                    _knocked = false;
+                    Parent.Sprite = IdleLeft;
+                    Parent.Direction = Vector2.Zero;
+                }
             }
         }
 
@@ -160,9 +183,8 @@ namespace _2DPixelArtGame
             }
         }
 
-        public void Knock(float time)
+        protected void Knock()
         {
-            KnockAmount = time;
             _attacking = false;
             _knocked = true;
             if (Math.Abs(Parent.Direction.X) >= Math.Abs(Parent.Direction.Y))

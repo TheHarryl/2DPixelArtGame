@@ -36,6 +36,11 @@ namespace _2DPixelArtEngine
                 Parent.Reindex(this);
             }
         }
+        public Vector2 ScreenPosition
+        {
+            get => Position - Parent.Parent.Camera.Position + new Vector2(Parent.Parent.Width / 2f, Parent.Parent.Height / 2f);
+            private set { }
+        }
         public Vector2 SpriteOffset;
         public Color Color;
 
@@ -84,7 +89,9 @@ namespace _2DPixelArtEngine
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
-            spriteBatch.Draw(Sprite.Texture, new Rectangle((int)(Position + SpriteOffset + offset).X, (int)(Position + SpriteOffset + offset).Y, (int)_scaledTexture.X, (int)_scaledTexture.Y), Sprite.Cropping, Color);
+            Vector2 position = Position + SpriteOffset + offset;
+            spriteBatch.Draw(Sprite.Texture, new Rectangle((int)position.X, (int)position.Y, (int)_scaledTexture.X, (int)_scaledTexture.Y), Sprite.Cropping, Color);
+            Controller.Draw(spriteBatch, position);
             if (Parent.Parent.DisplayHitboxes)
                 spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetHitboxBounds(offset).X, (int)GetHitboxBounds(offset).Y, (int)GetHitboxBounds(offset).Width, (int)GetHitboxBounds(offset).Height), Color.Red * 0.5f);
         }

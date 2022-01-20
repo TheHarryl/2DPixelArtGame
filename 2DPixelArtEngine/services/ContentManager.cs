@@ -14,8 +14,9 @@ namespace _2DPixelArtEngine
         private static GraphicsDevice _graphicsDevice;
         private static Dictionary<string, Texture2D> _loadedAssets;
         public static Texture2D Pixel;
+        public static string AssetDirectory;
 
-        public static void Initialize(GraphicsDevice graphicsDevice)
+        public static void Initialize(GraphicsDevice graphicsDevice, string assetDirectory)
         {
             _graphicsDevice = graphicsDevice;
             _loadedAssets = new Dictionary<string, Texture2D>();
@@ -24,13 +25,15 @@ namespace _2DPixelArtEngine
             Color[] data = new Color[1];
             data[0] = Color.White;
             Pixel.SetData(data);
+
+            AssetDirectory = assetDirectory;
         }
 
         public static Texture2D Load(string fileLocation)
         {
             if (_loadedAssets.ContainsKey(fileLocation.ToLower())) return _loadedAssets[fileLocation.ToLower()];
 
-            FileStream fileStream = new FileStream(fileLocation, FileMode.Open);
+            FileStream fileStream = new FileStream(AssetDirectory + fileLocation, FileMode.Open);
             Texture2D texture = Texture2D.FromStream(_graphicsDevice, fileStream);
             fileStream.Dispose();
 

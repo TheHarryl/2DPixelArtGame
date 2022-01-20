@@ -31,15 +31,16 @@ namespace _2DPixelArtGame
             {
                 List<Object> objects = Parent.Parent.GetNearbyChunks(Parent.Chunk);
                 RectangleF hitbox = Parent.GetHitboxBounds();
-                for (int i = 0; i < objects.Count; i++)
+                Object obj = objects.Find(o => o.GetHitboxBounds().IntersectsWith(hitbox) && o.Controller.Classifier != "grass");
+                if (obj != null)
                 {
-                    RectangleF objectHitbox = objects[i].GetHitboxBounds();
-                    if (!hitbox.IntersectsWith(objectHitbox) || objects[i].Controller.Classifier == "grass") continue;
+                    RectangleF objectHitbox = obj.GetHitboxBounds();
                     if (objectHitbox.X + (objectHitbox.Width / 2) > hitbox.X + (hitbox.Width / 2) && Parent.Sprite != BrushLeft)
                     {
                         Parent.Sprite = BrushLeft;
                         BrushLeft.Restart();
-                    } else if (objectHitbox.X + (objectHitbox.Width / 2) <= hitbox.X + (hitbox.Width / 2) && Parent.Sprite != BrushRight)
+                    }
+                    else if (objectHitbox.X + (objectHitbox.Width / 2) <= hitbox.X + (hitbox.Width / 2) && Parent.Sprite != BrushRight)
                     {
                         Parent.Sprite = BrushRight;
                         BrushRight.Restart();
@@ -51,12 +52,8 @@ namespace _2DPixelArtGame
             {
                 List<Object> objects = Parent.Parent.GetNearbyChunks(Parent.Chunk);
                 RectangleF hitbox = Parent.GetHitboxBounds();
-                for (int i = 0; i < objects.Count; i++)
-                {
-                    RectangleF objectHitbox = objects[i].GetHitboxBounds();
-                    if (hitbox.IntersectsWith(objectHitbox) && objects[i].Controller.Classifier != "grass")
-                        return;
-                }
+                Object obj = objects.Find(o => o.GetHitboxBounds().IntersectsWith(hitbox) && o.Controller.Classifier != "grass");
+                if (obj != null) return;
                 if (Parent.Sprite == BrushLeft)
                 {
                     Parent.Sprite = UnbrushLeft;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using Color = Microsoft.Xna.Framework.Color;
 using Object = _2DPixelArtEngine.Object;
 
 namespace _2DPixelArtGame
@@ -39,7 +40,23 @@ namespace _2DPixelArtGame
             if (Parent.Direction != Vector2.Zero)
                 Parent.Direction = Vector2.Normalize(Parent.Direction);
             if (state.IsKeyDown(Keys.Enter))
+            {
                 Attack();
+                Vector2 direction = Vector2.Zero;
+                if (Parent.Sprite == AttackUp)
+                    direction = new Vector2(0, -1);
+                else if (Parent.Sprite == AttackDown)
+                    direction = new Vector2(0, 1);
+                else if (Parent.Sprite == AttackLeft)
+                    direction = new Vector2(-1, 0);
+                else if (Parent.Sprite == AttackRight)
+                    direction = new Vector2(1, 0);
+                Object projectile = new Object(new RectangleF(0, 0, 20, 20), new Sprite(ContentManager.Load("projectile.png")), Parent.Position + direction * 20, new Vector2(-10, -10), new ProjectileController("playerprojectile", 5, 10, 0), 0);
+                projectile.Direction = direction;
+                projectile.Scale = new Vector2(2, 2);
+                projectile.Color = Color.Transparent;
+                Parent.Parent.Add(projectile);
+            }
 
             MouseState mouseState = Mouse.GetState();
             if (mouseState.LeftButton == ButtonState.Pressed && _oldMouseState.LeftButton == ButtonState.Released)

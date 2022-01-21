@@ -80,7 +80,7 @@ namespace _2DPixelArtEngine
 
         public ChunkPosition GetChunkPosition(float x, float y)
         {
-            return new ChunkPosition((int)Math.Ceiling(x / _chunkSize), (int)Math.Ceiling(y / _chunkSize));
+            return new ChunkPosition((int)(x / _chunkSize), (int)(y / _chunkSize));
         }
 
         public List<Object> GetChunk(ChunkPosition chunk)

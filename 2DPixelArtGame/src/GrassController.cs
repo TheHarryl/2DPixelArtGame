@@ -8,7 +8,7 @@ using Object = _2DPixelArtEngine.Object;
 
 namespace _2DPixelArtGame
 {
-    public class GrassController : BaseController
+    public class GrassController : ObjectController
     {
         public AnimatedSprite Normal;
         public AnimatedSprite BrushLeft;
@@ -77,6 +77,8 @@ namespace _2DPixelArtGame
             {
                 Parent.Sprite = Normal;
             }
+
+            base.Update(gameTime);
         }
     }
 }

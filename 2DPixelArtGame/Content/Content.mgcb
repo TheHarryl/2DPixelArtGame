@@ -13,3 +13,17 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Boxy Bold.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Boxy Bold.spritefont
+
+#begin Boxy-Bold.ttf
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Boxy-Bold.ttf;Boxy Bold.ttf
+

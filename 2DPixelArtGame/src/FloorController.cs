@@ -47,8 +47,10 @@ namespace _2DPixelArtGame
             {
                 Parent.Delete();
                 return;
+            } else if (gameTime.TotalGameTime.TotalSeconds >= DecayStart)
+            {
+                Parent.Hitbox = new RectangleF(0, 0, Parent.Sprite.Cropping.Width, Parent.Sprite.Cropping.Height * (1f - ((float)gameTime.TotalGameTime.TotalSeconds - DecayStart) / DecayLength));
             }
-
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
@@ -62,7 +64,7 @@ namespace _2DPixelArtGame
                 Vector2 position = offset + new Vector2(i % Sprite.Texture.Width, i / Sprite.Texture.Width) * Parent.Scale;
                 spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)position.X, (int)position.Y, (int)Parent.Scale.X, (int)Parent.Scale.Y), Color.Black);
                 if (timeSinceDecay > PixelTimestamps[i] + 1f) continue;
-                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)position.X, (int)position.Y + (int)(400 * interpolant), (int)Parent.Scale.X, (int)Parent.Scale.Y), Color.Lerp(PixelData[i], Color.Transparent, interpolant));
+                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)position.X, (int)position.Y + (int)TweenService.Tween(0, 400, interpolant, EasingDirection.In, EasingStyle.Quart), (int)Parent.Scale.X, (int)Parent.Scale.Y), Color.Lerp(PixelData[i], Color.Transparent, interpolant * 0.5f));
             }
         }
     }

@@ -37,18 +37,18 @@ namespace _2DPixelArtGame
             _pixelEngine = new PixelEngine(800, 480);
             Random random = new Random((int)GlobalTime.Timestamp.TotalMilliseconds);
 
-            /*int z = 0;
+            int z = 0;
             for (int y = 5; y >= -5; y--)
             {
                 for (int x = -30; x <= 30; x++)
                 {
                     Sprite floorSprite = new Sprite(ContentManager.Load("tileset.png"));
-                    Object floor = new Object(new RectangleF(0, 0, 64, 64), floorSprite, new Vector2(x * floorSprite.Cropping.Width * 2, y * floorSprite.Cropping.Height * 2), new Vector2(-25, 25), new FloorController(floorSprite, z * 60 + (float)random.NextDouble() * 6, 60));
+                    Object floor = new Object(new RectangleF(0, 0, 32, 32), floorSprite, new Vector2(x * floorSprite.Cropping.Width * 2, y * floorSprite.Cropping.Height * 2), new Vector2(-25, 25), new FloorController(floorSprite, z * 60 + (float)random.NextDouble() * 6, 60));
                     floor.Scale = new Vector2(2, 2);
                     _pixelEngine.Background.Add(floor);
                 }
                 z++;
-            }*/
+            }
 
             /*for (int i = 0; i < 80; i++)
             {
@@ -76,7 +76,7 @@ namespace _2DPixelArtGame
                 _pixelEngine.Scene.Add(grass);
             }
             
-            Object player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-32, -60), new PlayerController(
+            Object player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-16, -30), new PlayerController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)),
@@ -98,7 +98,7 @@ namespace _2DPixelArtGame
             _pixelEngine.Camera.CameraSubject = player;
             _pixelEngine.Scene.Add(player);
 
-            Object dummy = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(400, 200), new Vector2(-32, -78), new EnemyController(
+            Object dummy = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(400, 200), new Vector2(-16, -30), new EnemyController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)),
@@ -142,7 +142,7 @@ namespace _2DPixelArtGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(37, 146, 79));
+            GraphicsDevice.Clear(Color.Transparent);//(new Color(37, 146, 79));
 
             // TODO: Add your drawing code here
             _pixelEngine.Update(gameTime);

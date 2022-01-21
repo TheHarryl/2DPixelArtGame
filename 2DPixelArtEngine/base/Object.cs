@@ -29,7 +29,7 @@ namespace _2DPixelArtEngine
         private Vector2 _position;
         public Vector2 Position
         {
-            get => _position;
+            get => new Vector2((float)Math.Round(_position.X), (float)Math.Round(_position.Y));
             set
             {
                 _position = value;
@@ -58,7 +58,16 @@ namespace _2DPixelArtEngine
             }
         }
 
-        public RectangleF Hitbox;
+        private RectangleF _hitbox;
+        public RectangleF Hitbox
+        {
+            get => _hitbox;
+            set
+            {
+                _hitbox = value;
+                _scaledHitbox = new RectangleF(Hitbox.X * Scale.X, Hitbox.Y * Scale.Y, Hitbox.Width * Scale.X, Hitbox.Height * Scale.Y);
+            }
+        }
         public Vector2 Direction;
         public float Speed;
         public bool Collideable;
@@ -84,12 +93,12 @@ namespace _2DPixelArtEngine
             Sprite.Update(gameTime);
             Controller.Update(gameTime);
 
-            Position += Direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _position += Direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
-            Vector2 position = Position + SpriteOffset + offset;
+            Vector2 position = Position + SpriteOffset * Scale + offset;
             spriteBatch.Draw(Sprite.Texture, new Rectangle((int)position.X, (int)position.Y, (int)_scaledTexture.X, (int)_scaledTexture.Y), Sprite.Cropping, Color);
             Controller.Draw(spriteBatch, position);
             if (Parent.Parent.DisplayHitboxes)
@@ -98,12 +107,12 @@ namespace _2DPixelArtEngine
 
         public RectangleF GetBounds(Vector2 offset = new Vector2())
         {
-            return new RectangleF((Position + SpriteOffset + offset).X, (Position + SpriteOffset + offset).Y, (float)Math.Ceiling(_scaledTexture.X), (float)Math.Ceiling(_scaledTexture.Y));
+            return new RectangleF((Position + SpriteOffset * Scale + offset).X, (Position + SpriteOffset * Scale + offset).Y, (float)Math.Ceiling(_scaledTexture.X), (float)Math.Ceiling(_scaledTexture.Y));
         }
 
         public RectangleF GetHitboxBounds(Vector2 offset = new Vector2())
         {
-            return new RectangleF((Position + SpriteOffset + offset).X + _scaledHitbox.X, (Position + SpriteOffset + offset).Y + _scaledHitbox.Y, _scaledHitbox.Width, _scaledHitbox.Height);
+            return new RectangleF((Position + SpriteOffset * Scale + offset).X + _scaledHitbox.X, (Position + SpriteOffset * Scale + offset).Y + _scaledHitbox.Y, _scaledHitbox.Width, _scaledHitbox.Height);
         }
 
         public void Delete()

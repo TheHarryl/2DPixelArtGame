@@ -30,10 +30,10 @@ namespace _2DPixelArtGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            string directory = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "\\sprites\\";
+            string directory = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "\\assets\\";
             ContentManager.Initialize(GraphicsDevice, directory);
-            Texture2D playerTexture = ContentManager.Load("dude.png");
-            Texture2D grassTexture = ContentManager.Load("grass.png");
+            Texture2D playerTexture = ContentManager.LoadTexture("dude.png");
+            Texture2D grassTexture = ContentManager.LoadTexture("grass.png");
             _pixelEngine = new PixelEngine(800, 480);
             Random random = new Random((int)GlobalTime.Timestamp.TotalMilliseconds);
 
@@ -42,7 +42,7 @@ namespace _2DPixelArtGame
             {
                 for (int x = -30; x <= 30; x++)
                 {
-                    Sprite floorSprite = new Sprite(ContentManager.Load("tileset.png"));
+                    Sprite floorSprite = new Sprite(ContentManager.LoadTexture("tileset.png"));
                     Object floor = new Object(new RectangleF(0, 0, 32, 32), floorSprite, new Vector2(x * floorSprite.Cropping.Width * 2, y * floorSprite.Cropping.Height * 2), new Vector2(-25, 25), new FloorController(floorSprite, z * 60 + (float)random.NextDouble() * 6, 60));
                     floor.Scale = new Vector2(2, 2);
                     _pixelEngine.Background.Add(floor);
@@ -85,10 +85,10 @@ namespace _2DPixelArtGame
                 new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
                 new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
                 new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(160, 234, 32, 39), 4, 4, 8, false),
-                new AnimatedSprite(playerTexture, new Rectangle(160, 273, 32, 39), 4, 4, 8, false),
-                new AnimatedSprite(playerTexture, new Rectangle(160, 156, 32, 39), 4, 4, 8, false),
-                new AnimatedSprite(playerTexture, new Rectangle(160, 195, 32, 39), 4, 4, 8, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 234, 32, 39), 4, 4, 24, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 273, 32, 39), 4, 4, 24, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 156, 32, 39), 4, 4, 24, false),
+                new AnimatedSprite(playerTexture, new Rectangle(160, 195, 32, 39), 4, 4, 24, false),
                 new AnimatedSprite(playerTexture, new Rectangle(160, 78, 32, 39), 4, 4, 16, false),
                 new AnimatedSprite(playerTexture, new Rectangle(160, 117, 32, 39), 4, 4, 16, false),
                 new AnimatedSprite(playerTexture, new Rectangle(160, 39, 32, 39), 4, 4, 16, false),

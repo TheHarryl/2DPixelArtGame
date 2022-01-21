@@ -24,6 +24,9 @@ namespace _2DPixelArtEngine
         public bool Looped;
         public bool Done;
 
+        private int _cachedFrame = -1;
+        private Rectangle _cachedCropping;
+
         public AnimatedSprite(Texture2D texture, Rectangle? startingCropping, int framesPerRow, int totalFrames, float framesPerSecond, bool looped = true, int spacingX = 0, int spacingY = 0) : base(texture, startingCropping)
         {
             _startingRectangle = Cropping;
@@ -82,9 +85,18 @@ namespace _2DPixelArtEngine
                 else
                     currentFrame = TotalFrames - 1;
             }
-            int column = currentFrame % FramesPerRow;
-            int row = currentFrame / FramesPerRow;
-            Cropping = new Rectangle(_startingRectangle.X + column * (_startingRectangle.Width + SpacingX), _startingRectangle.Y + row * (_startingRectangle.Height + SpacingY), _startingRectangle.Width, _startingRectangle.Height);
+            if (currentFrame == _cachedFrame)
+            {
+                Cropping = _cachedCropping;
+            } else
+            {
+                int column = currentFrame % FramesPerRow;
+                int row = currentFrame / FramesPerRow;
+                Cropping = new Rectangle(_startingRectangle.X + column * (_startingRectangle.Width + SpacingX), _startingRectangle.Y + row * (_startingRectangle.Height + SpacingY), _startingRectangle.Width, _startingRectangle.Height);
+
+                _cachedFrame = currentFrame;
+                _cachedCropping = Cropping;
+            }
         }
 
         public void Restart()

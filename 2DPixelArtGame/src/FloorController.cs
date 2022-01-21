@@ -64,7 +64,7 @@ namespace _2DPixelArtGame
                 Vector2 position = offset + new Vector2(i % Sprite.Texture.Width, i / Sprite.Texture.Width) * Parent.Scale;
                 spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)position.X, (int)position.Y, (int)Parent.Scale.X, (int)Parent.Scale.Y), Color.Black);
                 if (timeSinceDecay > PixelTimestamps[i] + 1f) continue;
-                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)position.X, (int)position.Y + (int)TweenService.Tween(0, 400, interpolant, EasingDirection.In, EasingStyle.Quart), (int)Parent.Scale.X, (int)Parent.Scale.Y), Color.Lerp(PixelData[i], Color.Transparent, interpolant * 0.5f));
+                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)position.X, (int)position.Y + (int)TweenService.Tween(0, 400, interpolant, EasingDirection.In, EasingStyle.Quart), (int)Parent.Scale.X, (int)Parent.Scale.Y), Color.Lerp(PixelData[i], Color.Transparent, interpolant * 0.7f));
             }
         }
     }

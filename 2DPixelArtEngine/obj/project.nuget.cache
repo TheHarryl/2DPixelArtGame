@@ -1,10 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "b+30gduTrjFXJ+hDltkLY5Us1M4opkdS0Gyj/Omp+JP4HVXVaFtAEZFUqIr7oYG0q74jMetgBv27lB5XtSOVrw==",
+  "dgSpecHash": "WqwBGcEJtnNJrff1AWgPSXukjL+0aLkjKEVj0m1TZnk2+5PbNvrkLoFlBBrdIJYo4bUfvoF96LGiXxOcP0kmEg==",
   "success": true,
   "projectFilePath": "C:\\Users\\harry\\Desktop\\2DPixelArtGame\\2DPixelArtEngine\\2DPixelArtEngine.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\harry\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512"
+    "C:\\Users\\harry\\.nuget\\packages\\cyotek.drawing.bitmapfont\\2.0.1\\cyotek.drawing.bitmapfont.2.0.1.nupkg.sha512",
+    "C:\\Users\\harry\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\harry\\.nuget\\packages\\spritefontplus\\0.9.2\\spritefontplus.0.9.2.nupkg.sha512",
+    "C:\\Users\\harry\\.nuget\\packages\\stbimagesharp\\2.22.4\\stbimagesharp.2.22.4.nupkg.sha512",
+    "C:\\Users\\harry\\.nuget\\packages\\stbtruetypesharp\\1.24.7\\stbtruetypesharp.1.24.7.nupkg.sha512"
   ],
   "logs": []
 }

@@ -23,6 +23,9 @@ namespace _2DPixelArtGame
             Object obj = Parent.Parent.GetNearbyChunks(Parent.Chunk).Find(o => o.GetHitboxBounds().IntersectsWith(Parent.GetHitboxBounds()) && o.Controller.Classifier == "playerprojectile");
             if (obj != null)
             {
+                Object text = new Object(new RectangleF(), new FontSprite(ContentManager.LoadFont("boxy-bold.ttf")), Parent.Position);
+                text.AlwaysOnTop = true;
+                Parent.Parent.Add(text);
                 Parent.Direction = obj.Direction / Parent.Speed * 100f;
                 Knock();
                 obj.Delete();

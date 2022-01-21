@@ -25,7 +25,7 @@ namespace _2DPixelArtGame
         
         public override void Update(GameTime gameTime)
         {
-            if ((gameTime.TotalGameTime - Timestamp).TotalSeconds >= Duration)
+            if ((gameTime.TotalGameTime - Timestamp).TotalSeconds >= Duration || Vector2.Distance(Parent.Position, Parent.Parent.Parent.Camera.Position) > 2000f)
                 Parent.Delete();
         }
     }

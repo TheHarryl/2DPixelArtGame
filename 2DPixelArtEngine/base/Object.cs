@@ -14,7 +14,7 @@ namespace _2DPixelArtEngine
         public ChunkManager Parent;
         public ChunkPosition Chunk;
 
-        public Sprite Sprite;
+        public Sprite? Sprite;
         private BaseController _controller;
         public BaseController Controller
         {
@@ -45,7 +45,6 @@ namespace _2DPixelArtEngine
         public Color Color;
 
         private Vector2 _scale;
-        private Vector2 _scaledTexture;
         private RectangleF _scaledHitbox;
         public Vector2 Scale
         {
@@ -53,7 +52,6 @@ namespace _2DPixelArtEngine
             set
             {
                 _scale = value;
-                _scaledTexture = new Vector2(Sprite.Cropping.Width * _scale.X, Sprite.Cropping.Height * _scale.Y);
                 _scaledHitbox = new RectangleF(Hitbox.X * Scale.X, Hitbox.Y * Scale.Y, Hitbox.Width * Scale.X, Hitbox.Height * Scale.Y);
             }
         }
@@ -71,8 +69,9 @@ namespace _2DPixelArtEngine
         public Vector2 Direction;
         public float Speed;
         public bool Collideable;
+        public bool AlwaysOnTop;
 
-        public Object(RectangleF hitbox, Sprite sprite, Vector2 position = new Vector2(), Vector2 spriteOffset = new Vector2(), BaseController? controller = null, float speed = 0f, bool collideable = true)
+        public Object(RectangleF hitbox, Sprite sprite = null, Vector2 position = new Vector2(), Vector2 spriteOffset = new Vector2(), BaseController? controller = null, float speed = 0f, bool collideable = false)
         {
             Sprite = sprite;
             Controller = controller;
@@ -90,7 +89,8 @@ namespace _2DPixelArtEngine
 
         public virtual void Update(GameTime gameTime)
         {
-            Sprite.Update(gameTime);
+            if (Sprite != null)
+                Sprite.Update(gameTime);
             Controller.Update(gameTime);
 
             _position += Direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -99,7 +99,8 @@ namespace _2DPixelArtEngine
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
             Vector2 position = Position + SpriteOffset * Scale + offset;
-            spriteBatch.Draw(Sprite.Texture, new Rectangle((int)position.X, (int)position.Y, (int)_scaledTexture.X, (int)_scaledTexture.Y), Sprite.Cropping, Color);
+            if (Sprite != null)
+                Sprite.Draw(spriteBatch, Scale, Color, position);
             Controller.Draw(spriteBatch, position);
             if (Parent.Parent.DisplayHitboxes)
                 spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetHitboxBounds(offset).X, (int)GetHitboxBounds(offset).Y, (int)GetHitboxBounds(offset).Width, (int)GetHitboxBounds(offset).Height), Color.Red * 0.5f);
@@ -107,7 +108,11 @@ namespace _2DPixelArtEngine
 
         public RectangleF GetBounds(Vector2 offset = new Vector2())
         {
-            return new RectangleF((Position + SpriteOffset * Scale + offset).X, (Position + SpriteOffset * Scale + offset).Y, (float)Math.Ceiling(_scaledTexture.X), (float)Math.Ceiling(_scaledTexture.Y));
+            Vector2 position = Position + SpriteOffset * Scale + offset;
+            if (Sprite == null)
+                return new RectangleF(position.X, position.Y, 0f, 0f);
+            else
+                return new RectangleF(position.X, position.Y, (float)Math.Ceiling(Scale.X * Sprite.Texture.Width), (float)Math.Ceiling(Scale.Y * Sprite.Texture.Height));
         }
 
         public RectangleF GetHitboxBounds(Vector2 offset = new Vector2())
@@ -118,6 +123,11 @@ namespace _2DPixelArtEngine
         public void Delete()
         {
             Parent.Remove(this);
+        }
+
+        public float GetPriority(bool reversePriority = false)
+        {
+            return AlwaysOnTop ? ((reversePriority ? -1 : 1) * float.MaxValue) : Position.Y;
         }
     }
 }

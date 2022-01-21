@@ -39,7 +39,7 @@ namespace _2DPixelArtGame
                 Parent.Direction += new Vector2(1, 0);
             if (Parent.Direction != Vector2.Zero)
                 Parent.Direction = Vector2.Normalize(Parent.Direction);
-            if (state.IsKeyDown(Keys.Enter))
+            if (state.IsKeyDown(Keys.Enter) && !_attacking)
             {
                 Attack();
                 Vector2 direction = Vector2.Zero;
@@ -51,7 +51,7 @@ namespace _2DPixelArtGame
                     direction = new Vector2(-1, 0);
                 else if (Parent.Sprite == AttackRight)
                     direction = new Vector2(1, 0);
-                Object projectile = new Object(new RectangleF(0, 0, 20, 20), new Sprite(ContentManager.Load("projectile.png")), Parent.Position + direction * 20, new Vector2(-10, -10), new ProjectileController("playerprojectile", 5, 10, 0), 0);
+                Object projectile = new Object(new RectangleF(0, 0, 20, 20), new Sprite(ContentManager.LoadTexture("projectile.png")), Parent.Position + direction * 20, new Vector2(-10, -10), new ProjectileController("playerprojectile", 5, 10, 0), 0);
                 projectile.Direction = direction;
                 projectile.Scale = new Vector2(2, 2);
                 projectile.Color = Color.Transparent;
@@ -62,8 +62,9 @@ namespace _2DPixelArtGame
             if (mouseState.LeftButton == ButtonState.Pressed && _oldMouseState.LeftButton == ButtonState.Released)
             {
                 Vector2 direction = Vector2.Normalize(new Vector2(mouseState.X, mouseState.Y) - Parent.ScreenPosition);
-                Object projectile = new Object(new RectangleF(0, 0, 20, 20), new Sprite(ContentManager.Load("projectile.png")), Parent.Position + direction * 30f, new Vector2(-10, -10), new ProjectileController("playerprojectile", 5, 10, 5), 800);
+                Object projectile = new Object(new RectangleF(0, 0, 20, 20), new Sprite(ContentManager.LoadTexture("projectile.png")), Parent.Position + direction * 30f, new Vector2(-10, -10), new ProjectileController("playerprojectile", 5, 10, 5), 800);
                 projectile.Direction = direction;
+                projectile.AlwaysOnTop = true;
                 Parent.Parent.Add(projectile);
             }
 

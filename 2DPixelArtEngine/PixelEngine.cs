@@ -110,14 +110,14 @@ namespace _2DPixelArtEngine
 
             Vector2 topLeft = offset - Camera.Position + new Vector2(Width / 2f, Height / 2f);
             List<Object> renderableBackground = Background.GetChunksInRange(topLeftChunk.X, topLeftChunk.Y, width, height);
-            renderableBackground = renderableBackground.OrderByDescending(o => o.GetHitboxBounds().Bottom).ToList();
-            for (int i = 0; i < renderableBackground.Count; i++)
+            renderableBackground = renderableBackground.OrderByDescending(o => -o.GetPriority(true)).ToList();
+            for (int i = renderableBackground.Count - 1; i >= 0; i--)
             {
                 if (renderableBackground[i].GetBounds().IntersectsWith(screenBounds))
                     renderableBackground[i].Draw(spriteBatch, topLeft);
             }
             List<Object> renderableScene = Scene.GetChunksInRange(topLeftChunk.X, topLeftChunk.Y, width, height);
-            renderableScene = renderableScene.OrderByDescending(o => o.Position.Y).ToList();
+            renderableScene = renderableScene.OrderByDescending(o => o.GetPriority()).ToList();
             for (int i = renderableScene.Count - 1; i >= 0; i--)
             {
                 if (renderableScene[i].GetBounds().IntersectsWith(screenBounds))

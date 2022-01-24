@@ -22,36 +22,49 @@ namespace _2DPixelArtEngine
                 _text = value;
                 float width = 0f;
                 float height = 0f;
-                for (int i = 0; i < Text.Length; i++)
+                for (int i = 0; i < _text.Length; i++)
                 {
                     Glyph characterGlyph = Font.GetGlyphs()[Text[i]];
                     if (characterGlyph.BoundsInTexture.Height > height)
                         height = characterGlyph.BoundsInTexture.Height;
-                    width += characterGlyph.BoundsInTexture.Width + SpacingX;
+                    width += characterGlyph.BoundsInTexture.Width + SpacingX + Font.Spacing;
                 }
                 Cropping = new Rectangle(0, 0, (int)Math.Round(width), (int)Math.Round(height));
             }
         }
+
+        public int OutlineSize;
         public int SpacingX;
         public int SpacingY;
 
-        public FontSprite(SpriteFont font, string text = "Sample Text", int spacingX = 0, int spacingY = 0) : base(font.Texture)
+        public FontSprite(SpriteFont font, string text = "Sample Text", int outlineSize = 0, int spacingX = 0, int spacingY = 0) : base(font.Texture)
         {
             Font = font;
+            OutlineSize = outlineSize;
             SpacingX = spacingX;
             SpacingY = spacingY;
             Text = text;
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Vector2 scale, Color color, Vector2 offset = new Vector2())
+        private void DrawText(Glyph characterGlyph, SpriteBatch spriteBatch, Color color, Vector2 scale, Vector2 offset = new Vector2(), int letterSizeOffset = 0)
         {
-            List<Object> characters = new List<Object>();
+            //characterGlyph.Cropping.Height - Font.MeasureString(" ").Y
+            spriteBatch.Draw(Texture, new Rectangle((int)offset.X - letterSizeOffset, (int)(offset.Y - (characterGlyph.Cropping.Height - Font.MeasureString(" ").Y) * scale.Y) - letterSizeOffset, (int)(characterGlyph.BoundsInTexture.Width * scale.X + letterSizeOffset * 2), (int)(characterGlyph.BoundsInTexture.Height * scale.Y + letterSizeOffset * 2)), characterGlyph.BoundsInTexture, color);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, Color color, Vector2 scale, Vector2 offset = new Vector2())
+        {
             Vector2 position = new Vector2();
             for (int i = 0; i < Text.Length; i++)
             {
                 Glyph characterGlyph = Font.GetGlyphs()[Text[i]];
-                spriteBatch.Draw(Texture, new Rectangle((int)(position + offset).X, (int)(position + offset).Y, (int)(characterGlyph.BoundsInTexture.Width * scale.X), (int)(characterGlyph.BoundsInTexture.Height * scale.Y)), characterGlyph.BoundsInTexture, color);
-                position.X += characterGlyph.BoundsInTexture.Width + SpacingX;
+                if (OutlineSize != 0)
+                {
+                    DrawText(characterGlyph, spriteBatch, Color.Black, scale, position + offset, (int)(-OutlineSize * scale.X));
+                    DrawText(characterGlyph, spriteBatch, Color.Black, scale, position + offset, (int)(OutlineSize * scale.X));
+                }
+                DrawText(characterGlyph, spriteBatch, color, scale, position + offset);
+                position.X += characterGlyph.WidthIncludingBearings * scale.X + SpacingX;
             }
         }
     }

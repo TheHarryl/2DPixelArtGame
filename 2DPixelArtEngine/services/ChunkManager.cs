@@ -22,6 +22,7 @@ namespace _2DPixelArtEngine
     {
         public PixelEngine Parent;
         private Dictionary<ChunkPosition, List<Object>> _chunks;
+        private List<Object> _objects;
         private int _chunkSize;
 
         public ChunkManager(int chunkSize = 320)
@@ -33,6 +34,7 @@ namespace _2DPixelArtEngine
         public void Set(List<Object> objects)
         {
             _chunks = new Dictionary<ChunkPosition, List<Object>>();
+            _objects = new List<Object>();
             Add(objects);
         }
 
@@ -54,6 +56,7 @@ namespace _2DPixelArtEngine
                 _chunks.Add(chunk, new List<Object>());
             }
             _chunks[chunk].Add(obj);
+            _objects.Add(obj);
         }
 
         public void Remove(Object obj)
@@ -61,6 +64,7 @@ namespace _2DPixelArtEngine
             ChunkPosition chunk = obj.Chunk;
             if (_chunks[chunk].Contains(obj))
                 _chunks[chunk].Remove(obj);
+            _objects.Remove(obj);
         }
 
         public void Reindex(Object obj)
@@ -111,6 +115,11 @@ namespace _2DPixelArtEngine
         public List<Object> GetNearbyChunks(ChunkPosition chunk, int chunkRadius = 1)
         {
             return GetChunksInRange(chunk.X - chunkRadius, chunk.Y - chunkRadius, chunkRadius * 2, chunkRadius * 2);
+        }
+
+        public List<Object> GetAllChunks()
+        {
+            return _objects;
         }
     }
 }

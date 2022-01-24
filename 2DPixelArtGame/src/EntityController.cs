@@ -1,5 +1,6 @@
 ﻿using _2DPixelArtEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +10,7 @@ using Object = _2DPixelArtEngine.Object;
 
 namespace _2DPixelArtGame
 {
-    public class EntityController : BaseController
+    public class EntityController : InteractableController
     {
         public AnimatedSprite IdleUp;
         public AnimatedSprite IdleDown;
@@ -33,7 +34,9 @@ namespace _2DPixelArtGame
         public AnimatedSprite KnockLeft;
         public AnimatedSprite KnockRight;
 
-        private TimeSpan? _startedFalling;
+        private TimeSpan _lastMove;
+
+        private Object? _outline;
 
         public EntityController(AnimatedSprite idleUp, AnimatedSprite idleDown, AnimatedSprite idleLeft, AnimatedSprite idleRight, AnimatedSprite moveUp, AnimatedSprite moveDown, AnimatedSprite moveLeft, AnimatedSprite moveRight, AnimatedSprite attackUp, AnimatedSprite attackDown, AnimatedSprite attackLeft, AnimatedSprite attackRight, AnimatedSprite knockUp, AnimatedSprite knockDown, AnimatedSprite knockLeft, AnimatedSprite knockRight, string classifier = "entity") : base(classifier)
         {
@@ -69,14 +72,16 @@ namespace _2DPixelArtGame
             MoveDown = moveDown;
             MoveLeft = moveLeft;
             MoveRight = moveRight;
+
+            _lastMove = GlobalService.Timestamp;
         }
 
         public override void Update(GameTime gameTime)
         {
-            List<Object> objects = Parent.Parent.Parent.Background.GetNearbyChunks(Parent.Chunk);
+            List<Object> backgroundObjects = Parent.Parent.Parent.Background.GetNearbyChunks(Parent.Chunk);
             RectangleF hitbox = Parent.GetHitboxBounds();
-            Object obj = objects.Find(o => o.GetHitboxBounds().Contains(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height * 0.75f));
-            if (obj == null)
+            Object floorObj = backgroundObjects.Find(o => o.GetHitboxBounds().Contains(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height * 0.75f));
+            if (floorObj == null || _startedFalling != null)
             {
                 if (_startedFalling == null)
                     _startedFalling = gameTime.TotalGameTime;
@@ -159,13 +164,49 @@ namespace _2DPixelArtGame
                     _knocked = false;
                     Parent.Sprite = IdleLeft;
                     Parent.Direction = Vector2.Zero;
+                } else if (Parent.Sprite != KnockUp && Parent.Sprite != KnockDown && Parent.Sprite != KnockLeft & Parent.Sprite != KnockRight)
+                {
+                    _knocked = false;
                 }
+            }
+
+            if (Parent.Direction != Vector2.Zero)
+                _lastMove = GlobalService.Timestamp;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, Vector2 offset = default)
+        {
+            List<Object> sceneObjects = Parent.Parent.Parent.Scene.GetNearbyChunks(Parent.Chunk);
+            RectangleF hitbox = Parent.GetHitboxBounds();
+            Object inanimateObj = sceneObjects.Find(o => o.Controller.Classifier == "inanimate" && o.GetHitboxBounds().IntersectsWith(hitbox));
+            if (inanimateObj != null && _outline == null)
+            {
+                _outline = new Object(Parent.Hitbox, Parent.Sprite);
+                _outline.AlwaysOnTop = true;
+                Parent.Parent.Add(_outline);
+            } else if (inanimateObj == null && _outline != null)
+            {
+                Parent.Parent.Remove(_outline);
+                _outline = null;
+            }
+            if (_outline != null)
+            {
+                float interpolant = (float)(GlobalService.Timestamp - _lastMove).TotalSeconds;
+                if (interpolant > 1f)
+                    interpolant = 1f;
+                _outline.Hitbox = Parent.Hitbox;
+                _outline.Sprite = Parent.Sprite;
+                _outline.Position = Parent.Position;
+                _outline.SpriteOffset = Parent.SpriteOffset;
+                _outline.Scale = Parent.Scale;
+                _outline.Color = Color.Lerp(new Color(255, 255, 255, 0) * 0f, new Color(255, 255, 255, 0) * 0.15f, interpolant);
             }
         }
 
         protected void Attack()
         {
             if (_attacking || _knocked) return;
+            _lastMove = GlobalService.Timestamp;
             _attacking = true;
             /*List<Object> objects = Parent.Parent.GetNearbyChunks(Parent.Chunk);
             RectangleF hitbox = Parent.GetHitboxBounds();
@@ -201,6 +242,7 @@ namespace _2DPixelArtGame
 
         protected void Knock()
         {
+            _lastMove = GlobalService.Timestamp;
             _attacking = false;
             _knocked = true;
             if (Math.Abs(Parent.Direction.X) >= Math.Abs(Parent.Direction.Y))
@@ -222,6 +264,8 @@ namespace _2DPixelArtGame
                     KnockDown.Restart();
                 }
             }
+            Parent.TweenPosition(new Vector2Tween(Vector2.Zero, Parent.Direction * 70f, EasingStyle.Quint, EasingDirection.Out, 1f));
+            Parent.Direction = Vector2.Zero;
         }
     }
 }

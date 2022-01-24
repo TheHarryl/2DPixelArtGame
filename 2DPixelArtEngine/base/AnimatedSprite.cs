@@ -101,7 +101,7 @@ namespace _2DPixelArtEngine
 
         public void Restart()
         {
-            _timeStarted = GlobalTime.Timestamp;
+            _timeStarted = GlobalService.Timestamp;
             _timePaused = new TimeSpan(0);
             Paused = false;
             Done = false;

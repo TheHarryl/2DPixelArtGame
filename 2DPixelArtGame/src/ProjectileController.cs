@@ -13,19 +13,23 @@ namespace _2DPixelArtGame
     {
         public float Duration;
 
-        private TimeSpan Timestamp;
+        private TimeSpan _timestamp;
 
-        public ProjectileController(string classifier, int minDamage, int maxDamage, float duration = 999) : base(classifier)
+        public ProjectileController(string classifier, int minDamage, int maxDamage, float criticalMultiplier, float criticalChance, float duration = 999) : base(classifier)
         {
-            Properties.Add("MinDamage", minDamage);
-            Properties.Add("MaxDamage", maxDamage);
+            int damage = GlobalService.Random.Next(minDamage, maxDamage);
+            bool criticalHit = GlobalService.Random.Next(0, 1000) <= criticalChance * 1000;
+            if (criticalHit)
+                damage = (int)(damage * criticalMultiplier);
+            Flags.Add("Damage", damage);
+            Flags.Add("CriticalHit", criticalHit);
             Duration = duration;
-            Timestamp = GlobalTime.Timestamp;
+            _timestamp = GlobalService.Timestamp;
         }
         
         public override void Update(GameTime gameTime)
         {
-            if ((gameTime.TotalGameTime - Timestamp).TotalSeconds >= Duration || Vector2.Distance(Parent.Position, Parent.Parent.Parent.Camera.Position) > 2000f)
+            if ((gameTime.TotalGameTime - _timestamp).TotalSeconds >= Duration || Vector2.Distance(Parent.Position, Parent.Parent.Parent.Camera.Position) > 2000f)
                 Parent.Delete();
         }
     }

@@ -25,9 +25,9 @@ namespace _2DPixelArtEngine
 
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Vector2 scale, Color color, Vector2 offset = new Vector2())
+        public virtual void Draw(SpriteBatch spriteBatch, Color color, Vector2 scale, Vector2 offset = new Vector2())
         {
-            spriteBatch.Draw(Texture, new Rectangle((int)offset.X, (int)offset.Y, (int)(Texture.Width * scale.X), (int)(Texture.Height * scale.Y)), Cropping, color);
+            spriteBatch.Draw(Texture, new Rectangle((int)offset.X, (int)offset.Y, (int)(Cropping.Width * scale.X), (int)(Cropping.Height * scale.Y)), Cropping, color);
         }
     }
 }

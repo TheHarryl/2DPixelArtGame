@@ -49,8 +49,8 @@ C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\obj\Debug\netcoreapp3.1\2DP
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\obj\Debug\netcoreapp3.1\2DPixelArtGame.pdb
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\obj\Debug\netcoreapp3.1\2DPixelArtGame.genruntimeconfig.cache
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\Content\Boxy Bold.xnb
-C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\obj\Debug\netcoreapp3.1\2DPixelArtGame.csproj.CopyComplete
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\Cyotek.Drawing.BitmapFont.dll
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\SpriteFontPlus.dll
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\StbImageSharp.dll
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\StbTrueTypeSharp.dll
+C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\obj\Debug\netcoreapp3.1\2DPixelArtGame.csproj.CopyComplete

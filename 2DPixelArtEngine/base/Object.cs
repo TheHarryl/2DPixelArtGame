@@ -21,17 +21,29 @@ namespace _2DPixelArtEngine
             get => _controller;
             set
             {
+                if (value == null) return;
                 value.Parent = this;
                 _controller = value;
             }
         }
 
+        private Vector2Tween _positionTweenOffset;
         private Vector2 _position;
         public Vector2 Position
         {
-            get => new Vector2((float)Math.Round(_position.X), (float)Math.Round(_position.Y));
+            get {
+                if (_positionTweenOffset == null) return new Vector2((float)Math.Round(_position.X), (float)Math.Round(_position.Y));
+                if (_positionTweenOffset.Done())
+                {
+                    _position += _positionTweenOffset.CurrentValue;
+                    _positionTweenOffset = null;
+                    return _position;
+                }
+                return new Vector2((float)Math.Round((_position + _positionTweenOffset.CurrentValue).X), (float)Math.Round((_position + _positionTweenOffset.CurrentValue).Y));
+            }
             set
             {
+                if (value == _position && _positionTweenOffset == null) return;
                 _position = value;
                 Parent.Reindex(this);
             }
@@ -93,17 +105,49 @@ namespace _2DPixelArtEngine
                 Sprite.Update(gameTime);
             Controller.Update(gameTime);
 
-            _position += Direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (Collideable)
+            {
+                RectangleF hitboxBoundsX = GetHitboxBounds(new Vector2(Direction.X, 0f) * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                Object collisionX = Parent.GetNearbyChunks(Chunk).Find(o => o.Collideable && o.GetHitboxBounds().IntersectsWith(hitboxBoundsX) && o != this);
+                if (collisionX == null)
+                    Position = _position + new Vector2(Direction.X, 0f) * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                else
+                {
+                    RectangleF collisionXBounds = collisionX.GetHitboxBounds();
+                    if (Direction.X < 0f)
+                        Position = new Vector2(collisionXBounds.Right - (SpriteOffset.X + Hitbox.X) * Scale.X, _position.Y);
+                    else
+                        Position = new Vector2(collisionXBounds.X - (SpriteOffset.X + Hitbox.Right) * Scale.X, _position.Y);
+                }
+                RectangleF hitboxBoundsY = GetHitboxBounds(new Vector2(0f, Direction.Y) * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                Object collisionY = Parent.GetNearbyChunks(Chunk).Find(o => o.Collideable && o.GetHitboxBounds().IntersectsWith(hitboxBoundsY) && o != this);
+                if (collisionY == null)
+                    Position = _position + new Vector2(0f, Direction.Y) * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                else
+                {
+                    RectangleF collisionYBounds = collisionY.GetHitboxBounds();
+                    if (Direction.Y < 0f)
+                        Position = new Vector2(_position.X, collisionYBounds.Bottom - (SpriteOffset.Y + Hitbox.Y) * Scale.Y);
+                    else
+                        Position = new Vector2(_position.X, collisionYBounds.Y - (SpriteOffset.Y + Hitbox.Bottom) * Scale.Y);
+                }
+            } else
+            {
+                Position = _position + Direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
             Vector2 position = Position + SpriteOffset * Scale + offset;
             if (Sprite != null)
-                Sprite.Draw(spriteBatch, Scale, Color, position);
+                Sprite.Draw(spriteBatch, Color, Scale, position);
             Controller.Draw(spriteBatch, position);
             if (Parent.Parent.DisplayHitboxes)
-                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetHitboxBounds(offset).X, (int)GetHitboxBounds(offset).Y, (int)GetHitboxBounds(offset).Width, (int)GetHitboxBounds(offset).Height), Color.Red * 0.5f);
+            {
+                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetBounds(offset).X, (int)GetBounds(offset).Y, (int)GetBounds(offset).Width, (int)GetBounds(offset).Height), Color.Blue * 0.25f);
+                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetHitboxBounds(offset).X, (int)GetHitboxBounds(offset).Y, (int)GetHitboxBounds(offset).Width, (int)GetHitboxBounds(offset).Height), Color.Red * 0.25f);
+            }
         }
 
         public RectangleF GetBounds(Vector2 offset = new Vector2())
@@ -112,12 +156,19 @@ namespace _2DPixelArtEngine
             if (Sprite == null)
                 return new RectangleF(position.X, position.Y, 0f, 0f);
             else
-                return new RectangleF(position.X, position.Y, (float)Math.Ceiling(Scale.X * Sprite.Texture.Width), (float)Math.Ceiling(Scale.Y * Sprite.Texture.Height));
+                return new RectangleF(position.X, position.Y, (float)Math.Ceiling(Scale.X * Sprite.Cropping.Width), (float)Math.Ceiling(Scale.Y * Sprite.Cropping.Height));
         }
 
         public RectangleF GetHitboxBounds(Vector2 offset = new Vector2())
         {
             return new RectangleF((Position + SpriteOffset * Scale + offset).X + _scaledHitbox.X, (Position + SpriteOffset * Scale + offset).Y + _scaledHitbox.Y, _scaledHitbox.Width, _scaledHitbox.Height);
+        }
+
+        public void TweenPosition(Vector2Tween tween)
+        {
+            if (_positionTweenOffset != null)
+                _position += _positionTweenOffset.CurrentValue;
+            _positionTweenOffset = tween;
         }
 
         public void Delete()

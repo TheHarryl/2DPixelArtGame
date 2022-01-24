@@ -9,13 +9,10 @@ using Object = _2DPixelArtEngine.Object;
 
 namespace _2DPixelArtGame
 {
-    public class ObjectController : BaseController
+    public class ObjectController : InteractableController
     {
-        private TimeSpan? _startedFalling;
-
         public ObjectController(string classifier) : base(classifier)
         {
-            _startedFalling = null;
         }
         
         public override void Update(GameTime gameTime)

@@ -31,11 +31,10 @@ namespace _2DPixelArtGame
             DecayStart = decayStart;
             DecayLength = decayLength;
 
-            Random rand = new Random();
             float step = DecayLength / Sprite.Texture.Height;
             for (int y = 0; y < Sprite.Texture.Height; y++) {
                 for (int x = 0; x < Sprite.Texture.Width; x++) {
-                    PixelTimestamps[(Sprite.Texture.Height - 1 - y) * Sprite.Texture.Width + x] = (step * y) + ((float)rand.NextDouble() * step);
+                    PixelTimestamps[(Sprite.Texture.Height - 1 - y) * Sprite.Texture.Width + x] = (step * y) + ((float)GlobalService.Random.NextDouble() * step);
                 }
             }
 
@@ -55,7 +54,7 @@ namespace _2DPixelArtGame
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
-            float timeSinceDecay = (float)GlobalTime.Timestamp.TotalSeconds - DecayStart;
+            float timeSinceDecay = (float)GlobalService.Timestamp.TotalSeconds - DecayStart;
             if (timeSinceDecay < 0f) return;
             for (int i = PixelTimestamps.Length - 1; i >= 0; i--)
             {

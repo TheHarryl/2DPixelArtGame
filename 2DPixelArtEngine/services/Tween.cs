@@ -13,7 +13,7 @@ namespace _2DPixelArtEngine
         public float FinalValue;
         public float CurrentValue
         {
-            get => TweenService.Tween(InitialValue, FinalValue, (float)(GlobalTime.Timestamp - Timestamp).TotalSeconds / Duration, EasingDirection, EasingStyle);
+            get => TweenService.Tween(InitialValue, FinalValue, (float)(GlobalService.Timestamp - Timestamp).TotalSeconds / Duration, EasingDirection, EasingStyle);
             private set { }
         }
         public EasingStyle EasingStyle;
@@ -24,15 +24,20 @@ namespace _2DPixelArtEngine
         {
             InitialValue = initialValue;
             FinalValue = finalValue;
-            Timestamp = GlobalTime.Timestamp;
+            Timestamp = GlobalService.Timestamp;
             EasingStyle = easingStyle;
             EasingDirection = easingDirection;
             Duration = duration;
         }
 
+        public static float Lerp(float startingValue, float endingValue, float interpolant, EasingDirection easingDirection, EasingStyle easingStyle)
+        {
+            return TweenService.Tween(startingValue, endingValue, interpolant, easingDirection, easingStyle);
+        }
+
         public bool Done()
         {
-            return (GlobalTime.Timestamp - Timestamp).TotalSeconds >= Duration;
+            return (GlobalService.Timestamp - Timestamp).TotalSeconds >= Duration;
         }
     }
 }

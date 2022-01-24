@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -68,6 +69,14 @@ namespace _2DPixelArtEngine
 
         public int UpdateRadiusInChunks;
 
+        public KeyboardState? LastKeyboardState;
+        public KeyboardState? KeyboardState;
+        public MouseState? LastMouseState;
+        public MouseState? MouseState;
+
+        public bool KeyboardInput;
+        public bool MouseInput;
+
         public PixelEngine(/*GraphicsDevice graphicsDevice, */int width, int height, int updateRadiusInChunks = 5, int chunkSize = 320)//, int pixelRatio = 3)
         {
             //_graphicsDevice = graphicsDevice;
@@ -85,11 +94,26 @@ namespace _2DPixelArtEngine
             Background = new ChunkManager(chunkSize);
 
             DisplayHitboxes = false;
+            KeyboardInput = true;
+            MouseInput = true;
         }
 
         public void Update(GameTime gameTime, Vector2 offset = new Vector2())
         {
-            GlobalTime.Update(gameTime);
+            if (KeyboardInput)
+            {
+                LastKeyboardState = KeyboardState;
+                KeyboardState = Keyboard.GetState();
+            } else
+                KeyboardState = null;
+            if (MouseInput)
+            {
+                LastMouseState = MouseState;
+                MouseState = Mouse.GetState();
+            } else
+                MouseState = null;
+
+            GlobalService.Update(gameTime);
             ChunkPosition originChunk = Scene.GetChunkPosition(Camera.Position);
             List<Object> objects = Scene.GetNearbyChunks(originChunk, UpdateRadiusInChunks).Concat(Background.GetNearbyChunks(originChunk, UpdateRadiusInChunks)).ToList();
             for (int i = 0; i < objects.Count; i++)

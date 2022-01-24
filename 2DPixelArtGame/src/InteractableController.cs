@@ -13,8 +13,9 @@ namespace _2DPixelArtGame
     {
         protected TimeSpan? _startedFalling = null;
 
-        public InteractableController(string classifier) : base(classifier)
+        public InteractableController(string classifier, string interactableName = "") : base(classifier)
         {
+            Flags.Add("Interactable", interactableName);
         }
     }
 }

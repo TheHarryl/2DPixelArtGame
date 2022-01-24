@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Xml;
@@ -12,6 +13,65 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace _2DPixelArtGame
 {
+    public class Dialogue
+    {
+        public int ID;
+        public bool Starter;
+        public string Condition;
+        public string Flag;
+        public int GoTo;
+
+        public string Text;
+        public int TextSpeed;
+
+        public Sprite Avatar;
+        public int AvatarScale;
+
+        public List<DialogueResponse> Responses = new List<DialogueResponse>();
+
+        public Dialogue()
+        {
+
+        }
+
+        public Dialogue(int id, bool starter, string condition, string flag, string text, int textSpeed, Sprite avatar, int avatarScale, List<DialogueResponse> responses)
+        {
+            ID = id;
+            Starter = starter;
+            Condition = condition;
+            Flag = flag;
+            Text = text;
+            TextSpeed = textSpeed;
+            Avatar = avatar;
+            AvatarScale = avatarScale;
+            Responses = responses;
+        }
+
+        public Dialogue Clone()
+        {
+            return new Dialogue(ID, Starter, Condition, Flag, Text, TextSpeed, Avatar, AvatarScale, new List<DialogueResponse>(Responses));
+        }
+    }
+
+    public class DialogueResponse
+    {
+        public int ID;
+        public int GoTo;
+        public string Text;
+
+        public DialogueResponse(int id, int goTo, string text)
+        {
+            ID = id;
+            GoTo = goTo;
+            Text = text;
+        }
+
+        public DialogueResponse()
+        {
+
+        }
+    }
+
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -21,11 +81,20 @@ namespace _2DPixelArtGame
         private int _frameCount = 0;
         private DateTime _startFrameCount = DateTime.Now;
 
-        private string _interactionName = "";
-        private int _interactionStep = 1;
 
         private string _directory;
         private Object _player;
+
+        private Dictionary<string, List<Dialogue>> _dialogue = new Dictionary<string, List<Dialogue>>();
+        private string _interactionName = "";
+        private int _interactionStep = 1;
+        private int _interactionResponse = 0;
+        private TimeSpan _interactionStart;
+
+        private KeyboardState _lastKeyboardState;
+        private KeyboardState _keyboardState;
+        private MouseState _lastMouseState;
+        private MouseState _mouseState;
 
         public Game1()
         {
@@ -44,6 +113,66 @@ namespace _2DPixelArtGame
             _pixelEngine = new PixelEngine(800, 480);
             GlobalService.Initialize(new Random());
 
+            using (XmlReader reader = XmlReader.Create(_directory + "dialogue.xml"))
+            {
+                string name = "";
+                List<Dialogue> dialogue = new List<Dialogue>();
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        System.Diagnostics.Debug.WriteLine(reader.Name.ToString());
+                        switch (reader.Name.ToString())
+                        {
+                            case "interactable":
+                                if (name != "")
+                                {
+                                    _dialogue.Add(name, dialogue);
+                                }
+                                name = reader.GetAttribute("name");
+                                dialogue = new List<Dialogue>();
+                                break;
+                            case "dialogue":
+                                dialogue.Add(new Dialogue());
+                                string id = reader.GetAttribute("id");
+                                string starter = reader.GetAttribute("starter");
+                                string condition = reader.GetAttribute("condition");
+                                string flag = reader.GetAttribute("flag");
+                                string goTo = reader.GetAttribute("goto");
+                                dialogue[dialogue.Count - 1].ID = int.Parse(id);
+                                dialogue[dialogue.Count - 1].Starter = starter == null ? false : bool.Parse(starter);
+                                dialogue[dialogue.Count - 1].Condition = condition == null ? "" : condition;
+                                dialogue[dialogue.Count - 1].Flag = flag == null ? "" : flag;
+                                break;
+                            case "text":
+                                string textSpeed = reader.GetAttribute("speed");
+                                dialogue[dialogue.Count - 1].TextSpeed = textSpeed == null ? 30 : int.Parse(textSpeed);
+                                dialogue[dialogue.Count - 1].Text = reader.ReadString();
+                                break;
+                            case "avatar":
+                                int x = int.Parse(reader.GetAttribute("x"));
+                                int y = int.Parse(reader.GetAttribute("y"));
+                                int width = int.Parse(reader.GetAttribute("width"));
+                                int height = int.Parse(reader.GetAttribute("height"));
+                                string scale = reader.GetAttribute("scale");
+                                string spriteName = reader.ReadString();
+                                dialogue[dialogue.Count - 1].Avatar = new Sprite(ContentManager.LoadTexture(spriteName), new Rectangle(x, y, width, height));
+                                dialogue[dialogue.Count - 1].AvatarScale = scale == null ? 2 : int.Parse(scale);
+                                break;
+                            case "response":
+                                string rgoTo = reader.GetAttribute("goto");
+                                string text = reader.ReadString();
+                                DialogueResponse dialogueResponse = new DialogueResponse();
+                                dialogueResponse.GoTo = rgoTo == null ? -1 : int.Parse(rgoTo);
+                                dialogueResponse.Text = text;
+                                dialogue[dialogue.Count - 1].Responses.Add(dialogueResponse);
+                                break;
+                        }
+                    }
+                }
+                _dialogue.Add(name, dialogue);
+            }
+
             float secondsPerTile = 60f;
             int z = 0;
             for (int y = 5; y >= -5; y--)
@@ -58,9 +187,9 @@ namespace _2DPixelArtGame
                 z++;
             }
 
-            /*for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 80; i++)
             {
-                Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(200 + random.Next(0, 200), 100 + random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
+                Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(200 + GlobalService.Random.Next(0, 200), 100 + GlobalService.Random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
                     new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
                     new AnimatedSprite(grassTexture, new Rectangle(25, 42, 25, 42), 4, 4, 30, false),
                     new AnimatedSprite(grassTexture, new Rectangle(125, 0, 25, 42), 4, 4, 30, false),
@@ -69,9 +198,9 @@ namespace _2DPixelArtGame
                 ));
                 grass.Scale = new Vector2(2, 2);
                 _pixelEngine.Scene.Add(grass);
-            }*/
+            }
             
-            for (int i = 0; i < 160*3; i++)
+            /*for (int i = 0; i < 160*3; i++)
             {
                 Object grass = new Object(new RectangleF(4, 33, 17, 12), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-300 + GlobalService.Random.Next(0, 300), -300 + GlobalService.Random.Next(0, 800)), new Vector2(-12.5f, -42), new GrassController(
                     new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
@@ -82,7 +211,7 @@ namespace _2DPixelArtGame
                 ));
                 grass.Scale = new Vector2(2, 2);
                 _pixelEngine.Scene.Add(grass);
-            }
+            }*/
             
             _player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-16, -30), new PlayerController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
@@ -126,10 +255,10 @@ namespace _2DPixelArtGame
                 100
             ), 300);
             dummy.Scale = new Vector2(2, 2);
-            dummy.Color = new Color(255, 200, 200);
+            //dummy.Color = new Color(255, 200, 200);
             _pixelEngine.Scene.Add(dummy);
 
-            Object npc = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)), new Vector2(100, 0), new Vector2(-16, -30), new EntityController(
+            Object npc = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)), new Vector2(100, 0), new Vector2(-16, -30), new EntityController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 0, 32, 39)),
@@ -137,10 +266,11 @@ namespace _2DPixelArtGame
                 new AnimatedSprite(playerTexture, new Rectangle(32, 117, 32, 39), 4, 4, 8),
                 new AnimatedSprite(playerTexture, new Rectangle(32, 78, 32, 39), 4, 4, 8),
                 new AnimatedSprite(playerTexture, new Rectangle(32, 0, 32, 39), 4, 4, 8),
-                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8)
+                new AnimatedSprite(playerTexture, new Rectangle(32, 39, 32, 39), 4, 4, 8),
+                "entity", "testnpc"
             ), 300, true);
             npc.Scale = new Vector2(2, 2);
-            //npc.Color = new Color(200, 200, 200);
+            npc.Color = new Color(200, 200, 200);
             _pixelEngine.Scene.Add(npc);
             //_pixelEngine.DisplayHitboxes = true;
             
@@ -164,65 +294,98 @@ namespace _2DPixelArtGame
             base.Update(gameTime);
         }
 
+        public void SetInteraction(string interactionName, int interactionStep, GameTime gameTime)
+        {
+            _interactionName = interactionName;
+            _interactionStep = interactionStep;
+            _interactionStart = gameTime.TotalGameTime;
+            _interactionResponse = 0;
+            string flag = _dialogue[_interactionName].Find(o => o.ID == _interactionStep).Flag;
+            if (flag != "" && !_player.Controller.Flags.ContainsKey(flag))
+                _player.Controller.Flags.Add(flag, true);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Transparent);//(new Color(37, 146, 79));
 
             // TODO: Add your drawing code here
             _pixelEngine.Update(gameTime);
-            if (_pixelEngine.KeyboardState != null && _pixelEngine.LastKeyboardState != null)
+            _lastKeyboardState = _keyboardState;
+            _lastMouseState = _mouseState;
+            _keyboardState = Keyboard.GetState();
+            _mouseState = Mouse.GetState();
+            if (_interactionName != "")
             {
-                KeyboardState keyboardState = (KeyboardState)_pixelEngine.KeyboardState;
-                KeyboardState lastKeyboardState = (KeyboardState)_pixelEngine.LastKeyboardState;
-                if (keyboardState.IsKeyDown(Keys.Enter) && !lastKeyboardState.IsKeyDown(Keys.Enter))
+                Dialogue dialogue = _dialogue[_interactionName].Find(o => o.ID == _interactionStep);
+                if ((float)(gameTime.TotalGameTime - _interactionStart).TotalSeconds >= dialogue.Text.Length / dialogue.TextSpeed)
                 {
-                    /*Object collision;
-                    XmlTextReader textReader = new XmlTextReader(_directory + "dialogue.xml");
-                    textReader.Read();
-                    // If the node has value  
-                    while (textReader.Read())
+                    if (_keyboardState.IsKeyDown(Keys.Up) && !_lastKeyboardState.IsKeyDown(Keys.Up)) {
+                        _interactionResponse--;
+                    } else if (_keyboardState.IsKeyDown(Keys.Down) && !_lastKeyboardState.IsKeyDown(Keys.Down))
                     {
-                        // Move to fist element  
-                        textReader.MoveToElement();
-                        Console.WriteLine("XmlTextReader Properties Test");
-                        Console.WriteLine("===================");
-                        // Read this element's properties and display them on console
-                        Console.WriteLine("Name:" + textReader.Name);
-                        Console.WriteLine("Base URI:" + textReader.BaseURI);
-                        Console.WriteLine("Local Name:" + textReader.LocalName);
-                        Console.WriteLine("Attribute Count:" + textReader.AttributeCount.ToString());
-                        Console.WriteLine("Depth:" + textReader.Depth.ToString());
-                        Console.WriteLine("Line Number:" + textReader.LineNumber.ToString());
-                        Console.WriteLine("Node Type:" + textReader.NodeType.ToString());
-                        Console.WriteLine("Attribute Count:" + textReader.Value.ToString());
+                        _interactionResponse++;
                     }
-                    if (_player.CollisionX != null && )*/
+                    if (_interactionResponse < 0)
+                        _interactionResponse = 0;
+                    else if (_interactionResponse >= dialogue.Responses.Count)
+                        _interactionResponse = dialogue.Responses.Count - 1;
+                    if (_keyboardState.IsKeyDown(Keys.Enter) && !_lastKeyboardState.IsKeyDown(Keys.Enter))
+                    {
+                        if (dialogue.Responses[_interactionResponse].GoTo == -1)
+                        {
+                            _interactionName = "";
+                            _pixelEngine.KeyboardInput = true;
+                            _pixelEngine.MouseInput = true;
+                        } else
+                        {
+                            SetInteraction(_interactionName, dialogue.Responses[_interactionResponse].GoTo, gameTime);
+                        }
+                    }
+                }
+            } else if (_keyboardState.IsKeyDown(Keys.Enter) && !_lastKeyboardState.IsKeyDown(Keys.Enter))
+            {
+                RectangleF bounds = _player.GetHitboxBounds(Vector2.Zero, Vector2.One);
+                Object collision = _pixelEngine.Scene.GetNearbyChunks(_player.Chunk).Find(o => o.Controller.Flags.ContainsKey("Interactable") && _dialogue.ContainsKey((string)o.Controller.Flags["Interactable"]) && o.GetHitboxBounds().IntersectsWith(bounds) && o != _player);
+                if (collision != null)
+                {
+                    _pixelEngine.KeyboardInput = false;
+                    _pixelEngine.MouseInput = false;
+                    string interactionName = (string)collision.Controller.Flags["Interactable"];
+                    SetInteraction(interactionName, _dialogue[interactionName].Find(o => o.Starter && (o.Condition == "" || _player.Controller.Flags.ContainsKey(o.Condition))).ID, gameTime);
                 }
             }
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             _pixelEngine.Draw(_spriteBatch);
 
-            _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(18, 308, 764, 154), Color.Black);
-            _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(20, 310, 760, 150), Color.White);
-            _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(24, 314, 752, 142), Color.Black);
+            if (_interactionName != "")
+            {
+                Dialogue dialogue = _dialogue[_interactionName].Find(o => o.ID == _interactionStep);
+                float timeToFinish = dialogue.Text.Length / dialogue.TextSpeed;
+                float interpolant = (float)(gameTime.TotalGameTime - _interactionStart).TotalSeconds / timeToFinish;
+                if (interpolant > 1f) interpolant = 1f;
 
-            FontSprite _font = new FontSprite(ContentManager.LoadFont("eight-bit-dragon.ttf"), "Yo do u know where my cheese went");
-            _font.Draw(_spriteBatch, Color.White, new Vector2(0.75f), new Vector2(31 + 5, 325 + 5));
-            Sprite npcSprite = new Sprite(ContentManager.LoadTexture("testnpc.png"), new Rectangle(0, 0, 60, 60));
-            npcSprite.Draw(_spriteBatch, Color.White, new Vector2(2, 2), new Vector2(800 - 11 - 24 - 120, 325));
+                _spriteBatch.Draw(ContentManager.LoadTexture("dialoguebox.png"), new Rectangle(0, 290, 800, 190), Color.White);
 
-            _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(18, 308 - 90, 300 + 4, 80 + 4), Color.Black);
-            _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(20, 310 - 90, 300, 80), Color.White);
-            _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(24, 314 - 90, 300 - 8, 80 - 8), Color.Black);
+                FontSprite _font = new FontSprite(ContentManager.LoadFont("eight-bit-dragon.ttf"), dialogue.Text.Substring(0, (int)(dialogue.Text.Length * interpolant)), 0, 0, 10);
+                _font.Draw(_spriteBatch, Color.White, new Vector2(0.75f), new Vector2(31 + 5, 325 + 5));
+                dialogue.Avatar.Draw(_spriteBatch, Color.White, new Vector2(2, 2), new Vector2(800 - 11 - 24 - 120, 325));
 
-            _spriteBatch.Draw(ContentManager.LoadTexture("pointer.png"), new Rectangle(34, 314 - 80, 20, 20), Color.White);
+                if (interpolant == 1f && dialogue.Responses[0].Text != "")
+                {
+                    _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(18, 308 - 30 * (dialogue.Responses.Count + 1), 300 + 4, 30 * (dialogue.Responses.Count + 1) + -6), Color.Black);
+                    _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(20, 310 - 30 * (dialogue.Responses.Count + 1), 300, 30 * (dialogue.Responses.Count + 1) - 10), Color.White);
+                    _spriteBatch.Draw(ContentManager.Pixel, new Rectangle(24, 314 - 30 * (dialogue.Responses.Count + 1), 300 - 8, 30 * (dialogue.Responses.Count + 1) - 18), Color.Black);
 
+                    _spriteBatch.Draw(ContentManager.LoadTexture("pointer.png"), new Rectangle(34, 324 - 30 * (dialogue.Responses.Count + 1 - _interactionResponse), 20, 20), Color.White);
 
-            _font.Text = "yes i do sir or madam";
-            _font.Draw(_spriteBatch, Color.White, new Vector2(0.75f), new Vector2(60, 325 - 90));
-
-            _font.Text = "not a clue OG";
-            _font.Draw(_spriteBatch, Color.White, new Vector2(0.75f), new Vector2(60, 325 - 90 + 30));
+                    for (int i = 0; i < dialogue.Responses.Count; i++)
+                    {
+                        _font.Text = dialogue.Responses[i].Text;
+                        _font.Draw(_spriteBatch, Color.White, new Vector2(0.75f), new Vector2(60, 325 - 90 + i * 30));
+                    }
+                }
+            }
 
             _spriteBatch.End();
 

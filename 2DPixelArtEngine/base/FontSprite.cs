@@ -21,14 +21,15 @@ namespace _2DPixelArtEngine
             {
                 _text = value;
                 float width = 0f;
-                float height = 0f;
+                float height = 1f;
                 for (int i = 0; i < _text.Length; i++)
                 {
+                    if (Text[i] == '\n') height++;
+                    if (!Font.GetGlyphs().ContainsKey(Text[i])) continue;
                     Glyph characterGlyph = Font.GetGlyphs()[Text[i]];
-                    if (characterGlyph.BoundsInTexture.Height > height)
-                        height = characterGlyph.BoundsInTexture.Height;
                     width += characterGlyph.BoundsInTexture.Width + SpacingX + Font.Spacing;
                 }
+                height *= Font.LineSpacing;
                 Cropping = new Rectangle(0, 0, (int)Math.Round(width), (int)Math.Round(height));
             }
         }
@@ -57,6 +58,12 @@ namespace _2DPixelArtEngine
             Vector2 position = new Vector2();
             for (int i = 0; i < Text.Length; i++)
             {
+                if (Text[i] == '\n')
+                {
+                    position.Y += Font.LineSpacing * scale.Y + SpacingY;
+                    position.X = 0;
+                }
+                if (!Font.GetGlyphs().ContainsKey(Text[i])) continue;
                 Glyph characterGlyph = Font.GetGlyphs()[Text[i]];
                 if (OutlineSize != 0)
                 {

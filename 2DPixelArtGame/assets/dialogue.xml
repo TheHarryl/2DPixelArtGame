@@ -1,33 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
 <interactables>
   <interactable name="testnpc">
-    <dialogue id="1" starter="true">
-      <text speed="10">Yo do u know where my cheese went</text>
-      <avatar scale="2"></avatar>
-      <response id="1" goto="2">yes i do sir or madam</response>
-      <response id="2" goto="3">not a clue OG</response>
-    </dialogue>
-    <dialogue id="2">
-      <text speed="10">thanks my guy. I really appreciate it</text>
-      <avatar scale="2"></avatar>
-      <flags>
-        <flag>cheese</flag>
-      </flags>
-    </dialogue>
-    <dialogue id="3">
-      <text speed="10">maan.. u suck. dont let me catch you unawares on the streets!</text>
-      <avatar scale="2"></avatar>
-      <flags>
-        <flag>nocheese</flag>
-      </flags>
-    </dialogue>
     <dialogue id="4" starter="true" condition="cheese">
-      <text speed="10">ily man</text>
-      <avatar scale="2"></avatar>
+      <text>ily man</text>
+      <avatar x="0" y="60" width="60" height="60" scale="2">testnpc.png</avatar>
+      <response></response>
     </dialogue>
     <dialogue id="5" starter="true" condition="nocheese">
-      <text speed="10">didnt you hear me?? step away before u get shanked!!</text>
-      <avatar scale="2"></avatar>
+      <text>didnt you hear me?? step away before i mess u up!!</text>
+      <avatar x="60" y="0" width="60" height="60" scale="2">testnpc.png</avatar>
+      <response></response>
+    </dialogue>
+    <dialogue id="1" starter="true">
+      <text>Yo do u know where my cheese went</text>
+      <avatar x="0" y="0" width="60" height="60" scale="2">testnpc.png</avatar>
+      <response goto="2">yes i do sir or madam</response>
+      <response goto="3">not a clue OG</response>
+    </dialogue>
+    <dialogue id="2" flag="cheese">
+      <text>thanks my guy. I really appreciate it</text>
+      <avatar x="0" y="60" width="60" height="60" scale="2">testnpc.png</avatar>
+      <response></response>
+    </dialogue>
+    <dialogue id="3" flag="nocheese">
+      <text>maan.. u suck. dont let me catch you unawares on&#xA;the streets!</text>
+      <avatar x="60" y="0" width="60" height="60" scale="2">testnpc.png</avatar>
+      <response></response>
     </dialogue>
   </interactable>
 </interactables>

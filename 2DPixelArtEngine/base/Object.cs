@@ -159,9 +159,9 @@ namespace _2DPixelArtEngine
                 return new RectangleF(position.X, position.Y, (float)Math.Ceiling(Scale.X * Sprite.Cropping.Width), (float)Math.Ceiling(Scale.Y * Sprite.Cropping.Height));
         }
 
-        public RectangleF GetHitboxBounds(Vector2 offset = new Vector2())
+        public RectangleF GetHitboxBounds(Vector2 offset = new Vector2(), Vector2 sizeOffset = new Vector2())
         {
-            return new RectangleF((Position + SpriteOffset * Scale + offset).X + _scaledHitbox.X, (Position + SpriteOffset * Scale + offset).Y + _scaledHitbox.Y, _scaledHitbox.Width, _scaledHitbox.Height);
+            return new RectangleF((Position + SpriteOffset * Scale + offset).X + _scaledHitbox.X - sizeOffset.X, (Position + SpriteOffset * Scale + offset).Y + _scaledHitbox.Y - sizeOffset.Y, _scaledHitbox.Width + sizeOffset.X * 2, _scaledHitbox.Height + sizeOffset.Y * 2);
         }
 
         public void TweenPosition(Vector2Tween tween)

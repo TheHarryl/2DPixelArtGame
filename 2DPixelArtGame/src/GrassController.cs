@@ -67,12 +67,10 @@ namespace _2DPixelArtGame
             {
                 if (!UnbrushLeft.Done) return;
                 Parent.Sprite = Normal;
-                Normal.Restart();
             } else if (Parent.Sprite == UnbrushRight)
             {
                 if (!UnbrushRight.Done) return;
                 Parent.Sprite = Normal;
-                Normal.Restart();
             } else
             {
                 Parent.Sprite = Normal;

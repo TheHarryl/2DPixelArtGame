@@ -146,7 +146,7 @@ namespace _2DPixelArtGame
                                 break;
                             case "text":
                                 string textSpeed = reader.GetAttribute("speed");
-                                dialogue[dialogue.Count - 1].TextSpeed = textSpeed == null ? 30 : int.Parse(textSpeed);
+                                dialogue[dialogue.Count - 1].TextSpeed = textSpeed == null ? 35 : int.Parse(textSpeed);
                                 dialogue[dialogue.Count - 1].Text = reader.ReadString();
                                 break;
                             case "avatar":
@@ -187,22 +187,9 @@ namespace _2DPixelArtGame
                 z++;
             }
 
-            for (int i = 0; i < 80; i++)
+            /*for (int i = 0; i < 80; i++)
             {
-                Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(200 + GlobalService.Random.Next(0, 200), 100 + GlobalService.Random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
-                    new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
-                    new AnimatedSprite(grassTexture, new Rectangle(25, 42, 25, 42), 4, 4, 30, false),
-                    new AnimatedSprite(grassTexture, new Rectangle(125, 0, 25, 42), 4, 4, 30, false),
-                    new AnimatedSprite(grassTexture, new Rectangle(25, 0, 25, 42), 4, 4, 15, false),
-                    new AnimatedSprite(grassTexture, new Rectangle(125, 42, 25, 42), 4, 4, 15, false)
-                ));
-                grass.Scale = new Vector2(2, 2);
-                _pixelEngine.Scene.Add(grass);
-            }
-            
-            /*for (int i = 0; i < 160*3; i++)
-            {
-                Object grass = new Object(new RectangleF(4, 33, 17, 12), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-300 + GlobalService.Random.Next(0, 300), -300 + GlobalService.Random.Next(0, 800)), new Vector2(-12.5f, -42), new GrassController(
+                Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-100 + GlobalService.Random.Next(0, 200), -100 + GlobalService.Random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
                     new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
                     new AnimatedSprite(grassTexture, new Rectangle(25, 42, 25, 42), 4, 4, 30, false),
                     new AnimatedSprite(grassTexture, new Rectangle(125, 0, 25, 42), 4, 4, 30, false),
@@ -213,6 +200,24 @@ namespace _2DPixelArtGame
                 _pixelEngine.Scene.Add(grass);
             }*/
             
+            for (int i = 0; i < 160*3; i++)
+            {
+                Object grass = new Object(new RectangleF(4, 33, 17, 12), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-300 + GlobalService.Random.Next(0, 300), -300 + GlobalService.Random.Next(0, 800)), new Vector2(-12.5f, -42), new GrassController(
+                    new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
+                    new AnimatedSprite(grassTexture, new Rectangle(25, 42, 25, 42), 4, 4, 30, false),
+                    new AnimatedSprite(grassTexture, new Rectangle(125, 0, 25, 42), 4, 4, 30, false),
+                    new AnimatedSprite(grassTexture, new Rectangle(25, 0, 25, 42), 4, 4, 15, false),
+                    new AnimatedSprite(grassTexture, new Rectangle(125, 42, 25, 42), 4, 4, 15, false)
+                ));
+                grass.Scale = new Vector2(2, 2);
+                _pixelEngine.Scene.Add(grass);
+            }
+
+            Object box = new Object(new RectangleF(0, 0.2f, 1, 0.8f), new Sprite(ContentManager.Pixel, new Rectangle(0, 0, 1, 1)), new Vector2(-500, 0), new Vector2(-0.5f, -0.5f), null, 0, true);
+            box.Scale = new Vector2(250, 250);
+            box.Color = Color.Gray;
+            _pixelEngine.Scene.Add(box);
+
             _player = new Object(new RectangleF(8.5f, 27.5f, 15, 9), new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)), new Vector2(100, 200), new Vector2(-16, -30), new PlayerController(
                 new AnimatedSprite(playerTexture, new Rectangle(0, 117, 32, 39)),
                 new AnimatedSprite(playerTexture, new Rectangle(0, 78, 32, 39)),
@@ -310,7 +315,6 @@ namespace _2DPixelArtGame
             GraphicsDevice.Clear(Color.Transparent);//(new Color(37, 146, 79));
 
             // TODO: Add your drawing code here
-            _pixelEngine.Update(gameTime);
             _lastKeyboardState = _keyboardState;
             _lastMouseState = _mouseState;
             _keyboardState = Keyboard.GetState();
@@ -318,7 +322,7 @@ namespace _2DPixelArtGame
             if (_interactionName != "")
             {
                 Dialogue dialogue = _dialogue[_interactionName].Find(o => o.ID == _interactionStep);
-                if ((float)(gameTime.TotalGameTime - _interactionStart).TotalSeconds >= dialogue.Text.Length / dialogue.TextSpeed)
+                if ((float)(gameTime.TotalGameTime - _interactionStart).TotalSeconds >= (float)dialogue.Text.Length / dialogue.TextSpeed)
                 {
                     if (_keyboardState.IsKeyDown(Keys.Up) && !_lastKeyboardState.IsKeyDown(Keys.Up)) {
                         _interactionResponse--;
@@ -355,19 +359,23 @@ namespace _2DPixelArtGame
                     SetInteraction(interactionName, _dialogue[interactionName].Find(o => o.Starter && (o.Condition == "" || _player.Controller.Flags.ContainsKey(o.Condition))).ID, gameTime);
                 }
             }
+            if (_keyboardState.IsKeyDown(Keys.Tab) && !_lastKeyboardState.IsKeyDown(Keys.Tab))
+                _pixelEngine.DisplayHitboxes = !_pixelEngine.DisplayHitboxes;
+            _pixelEngine.Update(gameTime);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             _pixelEngine.Draw(_spriteBatch);
 
             if (_interactionName != "")
             {
                 Dialogue dialogue = _dialogue[_interactionName].Find(o => o.ID == _interactionStep);
-                float timeToFinish = dialogue.Text.Length / dialogue.TextSpeed;
+                float timeToFinish = (float)dialogue.Text.Length / dialogue.TextSpeed;
                 float interpolant = (float)(gameTime.TotalGameTime - _interactionStart).TotalSeconds / timeToFinish;
                 if (interpolant > 1f) interpolant = 1f;
 
                 _spriteBatch.Draw(ContentManager.LoadTexture("dialoguebox.png"), new Rectangle(0, 290, 800, 190), Color.White);
 
-                FontSprite _font = new FontSprite(ContentManager.LoadFont("eight-bit-dragon.ttf"), dialogue.Text.Substring(0, (int)(dialogue.Text.Length * interpolant)), 0, 0, 10);
+                int characters = (int)(dialogue.Text.Length * interpolant);
+                FontSprite _font = new FontSprite(ContentManager.LoadFont("eight-bit-dragon.ttf"), dialogue.Text.Substring(0, characters), 0, 0, 10);
                 _font.Draw(_spriteBatch, Color.White, new Vector2(0.75f), new Vector2(31 + 5, 325 + 5));
                 dialogue.Avatar.Draw(_spriteBatch, Color.White, new Vector2(2, 2), new Vector2(800 - 11 - 24 - 120, 325));
 

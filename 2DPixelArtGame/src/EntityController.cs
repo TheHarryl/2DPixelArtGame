@@ -197,7 +197,7 @@ namespace _2DPixelArtGame
                 _outline.Hitbox = Parent.Hitbox;
                 _outline.Sprite = Parent.Sprite;
                 _outline.Position = Parent.Position;
-                _outline.SpriteOffset = Parent.SpriteOffset;
+                _outline.Origin = Parent.Origin;
                 _outline.Scale = Parent.Scale;
                 _outline.Color = Color.Lerp(new Color(255, 255, 255, 0) * 0f, new Color(255, 255, 255, 0) * 0.15f, interpolant);
             }

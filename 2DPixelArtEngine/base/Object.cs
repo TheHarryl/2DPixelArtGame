@@ -53,7 +53,7 @@ namespace _2DPixelArtEngine
             get => Position - Parent.Parent.Camera.Position + new Vector2(Parent.Parent.Width / 2f, Parent.Parent.Height / 2f);
             private set { }
         }
-        public Vector2 SpriteOffset;
+        public Vector2 Origin;
         public Color Color;
 
         private Vector2 _scale;
@@ -83,14 +83,14 @@ namespace _2DPixelArtEngine
         public bool Collideable;
         public bool AlwaysOnTop;
 
-        public Object(RectangleF hitbox, Sprite sprite = null, Vector2 position = new Vector2(), Vector2 spriteOffset = new Vector2(), BaseController? controller = null, float speed = 0f, bool collideable = false)
+        public Object(RectangleF hitbox, Sprite sprite = null, Vector2 position = new Vector2(), Vector2 origin = new Vector2(), BaseController? controller = null, float speed = 0f, bool collideable = false)
         {
             Sprite = sprite;
             Controller = controller;
             if (Controller == null)
                 Controller = new BaseController();
             _position = position;
-            SpriteOffset = spriteOffset;
+            Origin = origin;
             Hitbox = hitbox;
             Direction = Vector2.Zero;
             Speed = speed;
@@ -115,9 +115,9 @@ namespace _2DPixelArtEngine
                 {
                     RectangleF collisionXBounds = collisionX.GetHitboxBounds();
                     if (Direction.X < 0f)
-                        Position = new Vector2(collisionXBounds.Right - (SpriteOffset.X + Hitbox.X) * Scale.X, _position.Y);
+                        Position = new Vector2(collisionXBounds.Right + (Hitbox.X - Origin.X) * Scale.X, _position.Y);
                     else
-                        Position = new Vector2(collisionXBounds.X - (SpriteOffset.X + Hitbox.Right) * Scale.X, _position.Y);
+                        Position = new Vector2(collisionXBounds.X + (Hitbox.Right - Origin.X) * Scale.X, _position.Y);
                 }
                 RectangleF hitboxBoundsY = GetHitboxBounds(new Vector2(0f, Direction.Y) * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 Object collisionY = Parent.GetNearbyChunks(Chunk).Find(o => o.Collideable && o.GetHitboxBounds().IntersectsWith(hitboxBoundsY) && o != this);
@@ -127,9 +127,9 @@ namespace _2DPixelArtEngine
                 {
                     RectangleF collisionYBounds = collisionY.GetHitboxBounds();
                     if (Direction.Y < 0f)
-                        Position = new Vector2(_position.X, collisionYBounds.Bottom - (SpriteOffset.Y + Hitbox.Y) * Scale.Y);
+                        Position = new Vector2(_position.X, collisionYBounds.Bottom + (Hitbox.Y - Origin.Y) * Scale.Y);
                     else
-                        Position = new Vector2(_position.X, collisionYBounds.Y - (SpriteOffset.Y + Hitbox.Bottom) * Scale.Y);
+                        Position = new Vector2(_position.X, collisionYBounds.Y + (Hitbox.Bottom - Origin.Y) * Scale.Y);
                 }
             } else
             {
@@ -139,7 +139,7 @@ namespace _2DPixelArtEngine
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset = new Vector2())
         {
-            Vector2 position = Position + SpriteOffset * Scale + offset;
+            Vector2 position = Position - Origin * Scale + offset;
             if (Sprite != null)
                 Sprite.Draw(spriteBatch, Color, Scale, position);
             Controller.Draw(spriteBatch, position);
@@ -152,7 +152,7 @@ namespace _2DPixelArtEngine
 
         public RectangleF GetBounds(Vector2 offset = new Vector2())
         {
-            Vector2 position = Position + SpriteOffset * Scale + offset;
+            Vector2 position = Position - Origin * Scale + offset;
             if (Sprite == null)
                 return new RectangleF(position.X, position.Y, 0f, 0f);
             else
@@ -161,7 +161,7 @@ namespace _2DPixelArtEngine
 
         public RectangleF GetHitboxBounds(Vector2 offset = new Vector2(), Vector2 sizeOffset = new Vector2())
         {
-            return new RectangleF((Position + SpriteOffset * Scale + offset).X + _scaledHitbox.X - sizeOffset.X, (Position + SpriteOffset * Scale + offset).Y + _scaledHitbox.Y - sizeOffset.Y, _scaledHitbox.Width + sizeOffset.X * 2, _scaledHitbox.Height + sizeOffset.Y * 2);
+            return new RectangleF((Position - Origin * Scale + offset).X + _scaledHitbox.X - sizeOffset.X, (Position - Origin * Scale + offset).Y + _scaledHitbox.Y - sizeOffset.Y, _scaledHitbox.Width + sizeOffset.X * 2, _scaledHitbox.Height + sizeOffset.Y * 2);
         }
 
         public void TweenPosition(Vector2Tween tween)

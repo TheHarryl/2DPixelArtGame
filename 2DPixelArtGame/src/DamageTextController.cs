@@ -69,7 +69,7 @@ namespace _2DPixelArtGame
                     text.Color = new Color(70, 255, 70);
             } else if (criticalHit)
                 text.Color = new Color(255, 70, 70);
-            text.SpriteOffset = new Vector2(-text.Sprite.Cropping.Width / 2, -text.Sprite.Cropping.Height / 2);
+            text.Origin = new Vector2(text.Sprite.Cropping.Width / 2, text.Sprite.Cropping.Height / 2);
             text.Scale = new Vector2(0.9f, 0.9f);
             obj.Parent.Add(text);
         }

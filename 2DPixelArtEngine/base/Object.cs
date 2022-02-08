@@ -115,9 +115,9 @@ namespace _2DPixelArtEngine
                 {
                     RectangleF collisionXBounds = collisionX.GetHitboxBounds();
                     if (Direction.X < 0f)
-                        Position = new Vector2(collisionXBounds.Right + (Hitbox.X - Origin.X) * Scale.X, _position.Y);
+                        Position = new Vector2(collisionXBounds.Right + (Origin.X - Hitbox.Left) * Scale.X, _position.Y);
                     else
-                        Position = new Vector2(collisionXBounds.X + (Hitbox.Right - Origin.X) * Scale.X, _position.Y);
+                        Position = new Vector2(collisionXBounds.X + (Origin.X - Hitbox.Right) * Scale.X, _position.Y);
                 }
                 RectangleF hitboxBoundsY = GetHitboxBounds(new Vector2(0f, Direction.Y) * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 Object collisionY = Parent.GetNearbyChunks(Chunk).Find(o => o.Collideable && o.GetHitboxBounds().IntersectsWith(hitboxBoundsY) && o != this);
@@ -127,9 +127,9 @@ namespace _2DPixelArtEngine
                 {
                     RectangleF collisionYBounds = collisionY.GetHitboxBounds();
                     if (Direction.Y < 0f)
-                        Position = new Vector2(_position.X, collisionYBounds.Bottom + (Hitbox.Y - Origin.Y) * Scale.Y);
+                        Position = new Vector2(_position.X, collisionYBounds.Bottom + (Origin.Y - Hitbox.Top) * Scale.Y);
                     else
-                        Position = new Vector2(_position.X, collisionYBounds.Y + (Hitbox.Bottom - Origin.Y) * Scale.Y);
+                        Position = new Vector2(_position.X, collisionYBounds.Y + (Origin.Y - Hitbox.Bottom) * Scale.Y);
                 }
             } else
             {
@@ -147,6 +147,7 @@ namespace _2DPixelArtEngine
             {
                 spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetBounds(offset).X, (int)GetBounds(offset).Y, (int)GetBounds(offset).Width, (int)GetBounds(offset).Height), Color.Blue * 0.25f);
                 spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)GetHitboxBounds(offset).X, (int)GetHitboxBounds(offset).Y, (int)GetHitboxBounds(offset).Width, (int)GetHitboxBounds(offset).Height), Color.Red * 0.25f);
+                spriteBatch.Draw(ContentManager.Pixel, new Rectangle((int)(Position - Origin * Scale + offset).X, (int)(Position - Origin * Scale + offset).Y, 2, 2), Color.Yellow * 0.25f);
             }
         }
 
@@ -178,7 +179,7 @@ namespace _2DPixelArtEngine
 
         public float GetPriority(bool reversePriority = false)
         {
-            return AlwaysOnTop ? ((reversePriority ? -1 : 1) * float.MaxValue) : Position.Y;
+            return AlwaysOnTop ? ((reversePriority ? -1 : 1) * float.MaxValue) : (_position - Origin * Scale).Y;
         }
     }
 }

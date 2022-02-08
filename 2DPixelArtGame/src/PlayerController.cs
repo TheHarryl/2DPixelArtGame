@@ -12,6 +12,9 @@ namespace _2DPixelArtGame
 {
     public class PlayerController : EntityController
     {
+        private TimeSpan _lastDash = new TimeSpan(0);
+        private int _dashFrame; 
+
         public PlayerController(AnimatedSprite idleUp, AnimatedSprite idleDown, AnimatedSprite idleLeft, AnimatedSprite idleRight, AnimatedSprite moveUp, AnimatedSprite moveDown, AnimatedSprite moveLeft, AnimatedSprite moveRight, AnimatedSprite attackUp, AnimatedSprite attackDown, AnimatedSprite attackLeft, AnimatedSprite attackRight, AnimatedSprite knockUp, AnimatedSprite knockDown, AnimatedSprite knockLeft, AnimatedSprite knockRight, string classifier = "player") : base(idleUp, idleDown, idleLeft, idleRight, moveUp, moveDown, moveLeft, moveRight, attackUp, attackDown, attackLeft, attackRight, knockUp, knockDown, knockLeft, knockRight, classifier)
         {
 
@@ -55,6 +58,37 @@ namespace _2DPixelArtGame
                     projectile.Scale = new Vector2(2, 2);
                     projectile.Color = Color.Transparent;
                     Parent.Parent.Add(projectile);
+                }
+                if (Parent.Parent.Parent.LastKeyboardState != null)
+                {
+                    KeyboardState lastKeyboardState = (KeyboardState)Parent.Parent.Parent.LastKeyboardState;
+                    if ((gameTime.TotalGameTime - _lastDash).TotalSeconds >= 0.4f && keyboardState.IsKeyDown(Keys.LeftShift) && !lastKeyboardState.IsKeyDown(Keys.LeftShift))
+                    {
+                        _lastDash = gameTime.TotalGameTime;
+                        _dashFrame = 0;
+                    }
+                }
+            }
+
+            if ((gameTime.TotalGameTime - _lastDash).TotalSeconds <= 1)
+            {
+                float interpolant = (float)(gameTime.TotalGameTime - _lastDash).TotalSeconds / 0.25f;
+
+                if (interpolant <= 1f && Parent.Parent.Parent.MouseState != null) {
+                    MouseState mouseState = (MouseState)Parent.Parent.Parent.MouseState;
+                    Parent.Direction = Vector2.Normalize(new Vector2(mouseState.X, mouseState.Y) - new Vector2(400, 240));
+                }
+                Parent.Direction *= TweenService.Tween(2.5f, 1, interpolant, EasingDirection.In, EasingStyle.Quart);
+
+                if (interpolant <= 1.15f && _dashFrame < interpolant * 7.5)
+                {
+                    _dashFrame++;
+                    //(RectangleF hitbox, Sprite sprite = null, Vector2 position = new Vector2(), Vector2 origin = new Vector2(), BaseController? controller = null, float speed = 0f, bool collideable = false)
+                    Color color = new Color((int)Parent.Color.R, Parent.Color.G, Parent.Color.B, 100);
+                    Object obj = new Object(new RectangleF(), Parent.Sprite.Clone(), Parent.Position, Parent.Origin, new ParticleController("dashparticle", 0.2f, EasingDirection.Out, EasingStyle.Quad, color * 0f, Parent.Scale, 0));
+                    obj.Scale = Parent.Scale;
+                    obj.Color = color * 0.45f;
+                    Parent.Parent.Add(obj);
                 }
             }
 

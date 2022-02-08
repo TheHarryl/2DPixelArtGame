@@ -187,7 +187,7 @@ namespace _2DPixelArtGame
                 z++;
             }
 
-            /*for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 80; i++)
             {
                 Object grass = new Object(new RectangleF(4, 28, 17, 17), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-100 + GlobalService.Random.Next(0, 200), -100 + GlobalService.Random.Next(0, 200)), new Vector2(-12.5f, -42), new GrassController(
                     new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
@@ -198,9 +198,9 @@ namespace _2DPixelArtGame
                 ));
                 grass.Scale = new Vector2(2, 2);
                 _pixelEngine.Scene.Add(grass);
-            }*/
+            }
             
-            for (int i = 0; i < 160*3; i++)
+            /*for (int i = 0; i < 160*3; i++)
             {
                 Object grass = new Object(new RectangleF(4, 33, 17, 12), new Sprite(grassTexture, new Rectangle(0, 0, 25, 42)), new Vector2(-300 + GlobalService.Random.Next(0, 300), -300 + GlobalService.Random.Next(0, 800)), new Vector2(12.5f, 42), new GrassController(
                     new AnimatedSprite(grassTexture, new Rectangle(0, 0, 25, 42)),
@@ -211,7 +211,7 @@ namespace _2DPixelArtGame
                 ));
                 grass.Scale = new Vector2(2, 2);
                 _pixelEngine.Scene.Add(grass);
-            }
+            }*/
 
             Object box = new Object(new RectangleF(0, 0.2f, 1, 0.8f), new Sprite(ContentManager.Pixel, new Rectangle(0, 0, 1, 1)), new Vector2(-500, 0), new Vector2(0.5f, 0.5f), null, 0, true);
             box.Scale = new Vector2(250, 250);

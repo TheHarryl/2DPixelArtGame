@@ -74,5 +74,10 @@ namespace _2DPixelArtEngine
                 position.X += characterGlyph.WidthIncludingBearings * scale.X + SpacingX;
             }
         }
+
+        public override Sprite Clone()
+        {
+            return new FontSprite(Font, Text, OutlineSize, SpacingX, SpacingY);
+        }
     }
 }

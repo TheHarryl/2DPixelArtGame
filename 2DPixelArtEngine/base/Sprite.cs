@@ -29,5 +29,10 @@ namespace _2DPixelArtEngine
         {
             spriteBatch.Draw(Texture, new Rectangle((int)offset.X, (int)offset.Y, (int)(Cropping.Width * scale.X), (int)(Cropping.Height * scale.Y)), Cropping, color);
         }
+
+        public virtual Sprite Clone()
+        {
+            return new Sprite(Texture, Cropping);
+        }
     }
 }

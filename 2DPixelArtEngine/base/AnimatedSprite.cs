@@ -106,5 +106,10 @@ namespace _2DPixelArtEngine
             Paused = false;
             Done = false;
         }
+
+        public override Sprite Clone()
+        {
+            return new AnimatedSprite(Texture, _startingRectangle, FramesPerRow, TotalFrames, FramesPerSecond, Looped, SpacingX, SpacingY);
+        }
     }
 }

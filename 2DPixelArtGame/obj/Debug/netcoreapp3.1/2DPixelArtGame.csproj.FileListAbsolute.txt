@@ -53,3 +53,4 @@ C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\Cyo
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\SpriteFontPlus.dll
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\StbImageSharp.dll
 C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\bin\Debug\netcoreapp3.1\StbTrueTypeSharp.dll
+C:\Users\harry\Desktop\2DPixelArtGame\2DPixelArtGame\obj\Debug\netcoreapp3.1\2DPixelArtGame.csproj.CopyComplete
